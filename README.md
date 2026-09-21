@@ -3,7 +3,7 @@
 **Extension Chrome pour les étudiants Icam : ton agenda, ta prochaine chance, ta trajectoire 70 %.**
 Relie trois sources que l'école fournit séparément : **Hyperplanning** (quand a lieu un cours), le **syllabus** (quels critères chaque cours évalue) et **PITCH** (quels critères tu as déjà démontrés).
 
-Par Thomas Pitaval, Icam Lille, Bachelor International promo 2030 · open source · v7.3.2 · [changelog](docs/CHANGELOG.md)
+Par Thomas Pitaval, Icam Lille, Bachelor International promo 2030 · open source · v1.7.3.2 · [changelog](docs/CHANGELOG.md)
 
 **[Télécharger PITCH+ (zip)](https://github.com/pitavaldev/pitchplus/releases/latest/download/pitchplus.zip)** · [guide d'installation en français et en anglais](docs/install.html)
 

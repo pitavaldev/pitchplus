@@ -1,27 +1,28 @@
 # Changelog PITCH+
 
-## 7.3.2 — 2026-09-14
+## 1.7.3.2 — 2026-09-21
 
+- Numérotation ramenée en V1 : toutes les versions sont préfixées par `1.` (1.7.3.2, 1.7.3.1, … 1.6.0.0). Première version publique sur GitHub.
 - Lien Moodle du cours directement sur chaque carte de séance de l'agenda et dans le bandeau « Prochaine séance utile » (181 cours sur 195 ont un lien dans le syllabus). Ouvre moodle.icam.fr dans un nouvel onglet, avec ta session Moodle existante.
 
-## 7.3.1 — 2026-09-14
+## 1.7.3.1 — 2026-09-14
 
 - Correction : l'onglet Trajectoire 70 % ne s'affichait plus (une variable locale `t` masquait la fonction de traduction, TypeError au rendu).
 - Légende de la jauge traduite en anglais (démontrés / prévus / à venir restaient en français).
 
-## 7.3.0 — 14 septembre 2026
+## 1.7.3.0 — 14 septembre 2026
 
 **Français ou anglais**, au choix dans les Réglages. L'interface entière bascule, ainsi que les intitulés de critères, d'acquis, de cours et de compétences, qui existent dans les deux langues dans le syllabus. Les dates suivent la langue. Quand une donnée n'existe que dans une langue, elle s'affiche telle quelle plutôt que d'être traduite à la volée. Les titres d'acquis viennent de PITCH en français et du syllabus en anglais.
 
 **Le sélecteur de seuil 50 / 100 % disparaît.** Un acquis est validé à 50 % de ses critères démontrés, seuil de progression enregistré dans PITCH. La lecture à 100 % n'est plus proposée.
 
-## 7.2.0 — 14 septembre 2026
+## 1.7.2.0 — 14 septembre 2026
 
 **Compas**, un cinquième onglet pour chercher dans le syllabus. Un champ de recherche plein texte sur les critères, les acquis, les cours et leurs codes ; des filtres par compétence, semestre, domaine et, quand PITCH est lu, par état personnel ; trois niveaux de lecture, critères regroupés par acquis, acquis, ou cours dépliables avec leur lien Moodle. Chaque critère ouvre le panneau de détail habituel. Export CSV de la recherche courante.
 
 Restes de l'audit des libellés : « Unités » devient « Cours » dans le Diagnostic, le groupe des critères sans séance s'appelle « Sans séance ».
 
-## 7.1.1 — 14 septembre 2026
+## 1.7.1.1 — 14 septembre 2026
 
 **Un mot par statut.** Le même statut de critère portait jusqu'à quatre noms selon l'écran, et « requalification » servait à la fois pour les acquis sous le seuil et pour les critères sans séance, d'où un « 23 requalifications » à côté d'un « 131 requalifications » qui ne comptaient pas la même chose.
 
@@ -31,7 +32,7 @@ Restes de l'audit des libellés : « Unités » devient « Cours » dans le Diag
 - « Unité » ne s'affiche plus, on dit « cours ». Le mot « séance » désigne toujours un événement de l'agenda.
 - Le groupe « Sans séance » précise où l'outil a cherché : agenda, syllabus, PITCH.
 
-## 7.1.0 — 14 septembre 2026
+## 1.7.1.0 — 14 septembre 2026
 
 **La Trajectoire change de lecture**, après vérification par Thomas des chiffres de son compte et quatre questions tranchées avec lui.
 
@@ -43,11 +44,11 @@ Restes de l'audit des libellés : « Unités » devient « Cours » dans le Diag
 
 Fait de données mis au jour par les tests : un même critère peut appartenir à deux acquis d'années différentes, et quelques acquis rattachés à B1 n'ont de cours évaluateur qu'en B2 ou B3.
 
-## 7.0.0 — 14 septembre 2026
+## 1.7.0.0 — 14 septembre 2026
 
-Renumérotation en v7 pour lever toute ambiguïté sur la version installée. Aucun changement fonctionnel par rapport à 6.1.2.
+Renumérotation en v7 pour lever toute ambiguïté sur la version installée. Aucun changement fonctionnel par rapport à 1.6.1.2.
 
-## 6.1.2 — 10 septembre 2026
+## 1.6.1.2 — 10 septembre 2026
 
 **Moins de chiffres, moins de texte.** L'écran Trajectoire affichait deux fois le même pourcentage sous trois libellés différents, plus un bloc « Acquis » qui répétait ce que l'onglet Acquis dit déjà. Il passe de 345 à 121 mots.
 
@@ -57,7 +58,7 @@ Renumérotation en v7 pour lever toute ambiguïté sur la version installée. Au
 - Sous-titres d'explication et total redondant de la légende retirés.
 - En mode démo, les intitulés de compétence ne s'affichent plus en anglais.
 
-## 6.1.1 — 10 septembre 2026
+## 1.6.1.1 — 10 septembre 2026
 
 **Le vocabulaire de l'école, dit en clair.** Les codes du référentiel n'apparaissent plus dans aucune liste : ni `AA-EEE-C01-1-01`, ni `CRIT_0001`, ni `RA-…`. Chaque ligne de critère porte désormais sa compétence et l'intitulé de son acquis, en toutes lettres.
 
@@ -68,7 +69,7 @@ Renumérotation en v7 pour lever toute ambiguïté sur la version installée. Au
 
 Limite connue : en mode démo, le filtre par compétence affiche les intitulés anglais, parce que les données fictives reprennent le PDF. Sur un compte réel, PITCH fournit le français.
 
-## 6.1.0 — 9 septembre 2026
+## 1.6.1.0 — 9 septembre 2026
 
 **Simplification de l'interface.** L'outil affichait tout, tout le temps : 8 onglets, 6 boutons d'en-tête et un écran « Prochaine chance » de 202 lignes et 12 500 mots.
 
@@ -91,11 +92,11 @@ Limite connue : en mode démo, le filtre par compétence affiche les intitulés 
 - Champs construits et jamais lus supprimés, index d'unités construit une seule fois, code mort retiré du script de build.
 - Le service worker ne retélécharge plus l'agenda au démarrage si le flux date de moins de 24 heures.
 
-## 6.0.1 — 9 septembre 2026
+## 1.6.0.1 — 9 septembre 2026
 - **Correction de la jointure PITCH → syllabus** : `TraitCode` est une clé composite `RA-…-AA-…-CRIT_xxxx`, pas le code de critère nu. Sans cela aucun critère ne s'appariait. Vérifié sur compte réel : 1 221/1 221 critères et 99,6 % des séances appariés ([rapport](reports/pitch-join.md)).
 - Générateur de démo et tests alignés sur la forme réelle des identifiants.
 
-## 6.0.0 — septembre 2026
+## 1.6.0.0 — septembre 2026
 - Nouvelle forme : extension Chrome (Manifest V3), page d'application plein écran, plus de bookmarklet.
 - Trois nouvelles vues à égalité : **Agenda** (Hyperplanning annoté des critères à démontrer), **Prochaine chance** (par critère manquant, la prochaine séance datée, sinon le cours à venir, sinon requalification), **Trajectoire 70 %** (jauge de l'année, par compétence, par semestre, projection).
 - Jointure des trois sources : flux iCal Hyperplanning (`DESCRIPTION` structurée), mapping officiel cours × critères (Excel `Mapping_LG_Course`), syllabus PDF (type, heures, Moodle, enseignants, séances PBL), API PITCH (état des critères).
@@ -105,5 +106,5 @@ Limite connue : en mode démo, le filtre par compétence affiche les intitulés 
 - Diagnostic intégré : taux d'appariement agenda ↔ syllabus et PITCH ↔ syllabus, cours non appariés, sources et versions.
 - Garanties : aucun identifiant saisi, aucune écriture dans PITCH, aucun serveur, aucune télémétrie. La seule requête réseau hors PITCH est la lecture du flux ICS de l'étudiant.
 
-## 5.3 — septembre 2026 (bookmarklet)
+## 1.5.3 — septembre 2026 (bookmarklet)
 - Dernière version bookmarklet : vue d'ensemble en quatre graphiques, verdict requalification / rattrapage, par séance, changements, blocs, suivi personnel.
