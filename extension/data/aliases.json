@@ -1,0 +1,28 @@
+{
+  "_doc": "Table d'alias Hyperplanning -> code d'unité syllabus. Clé = code Hyperplanning normalisé (majuscules, espaces -> _, segment avant ' - '). Valeur = code unité, ou objet {semestre: code} quand l'unité dépend du semestre. Partagée par tools/build_data.py, tools/coverage_report.py et extension/lib/units.js.",
+  "aliases": {
+    "MEC-EEE_LAB1": "CROSS_MME-EEE_LAB1",
+    "CROSSDISCIP_BOAT": {
+      "B2.3": "CROSS_PP5",
+      "B2.4": "CROSS_PP6",
+      "B3.5": "CROSS_PP7",
+      "B3.6": "CROSS_PP8"
+    }
+  },
+  "ignore": {
+    "_doc": "Codes Hyperplanning hors compétences : jamais appariés, étiquetés « hors compétences » dans l'agenda. Comparaison sur le code normalisé (sans accents), code entier ou premier segment.",
+    "prefixes": [
+      "RIM",
+      "SPORT",
+      "MESSE",
+      "ACCUEIL",
+      "JPO",
+      "INTERNATIONAL_OFFICE",
+      "FORUM",
+      "FERIE",
+      "VACANCES",
+      "AUTONOMY",
+      "WELCOME"
+    ]
+  }
+}

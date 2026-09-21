@@ -1,0 +1,13 @@
+{
+  "manifest_version": 3,
+  "name": "PITCH+",
+  "version": "7.3.2",
+  "description": "Agenda, prochaine chance et trajectoire 70 % pour les étudiants Icam : relie Hyperplanning, le syllabus et PITCH. 100 % dans ton navigateur, sans compte ni serveur.",
+  "icons": { "16": "assets/icon16.png", "48": "assets/icon48.png", "128": "assets/icon128.png" },
+  "action": { "default_title": "PITCH+ — ouvrir le tableau de bord" },
+  "background": { "service_worker": "sw.js", "type": "module" },
+  "permissions": ["storage", "alarms", "tabs", "scripting"],
+  "host_permissions": ["https://pitch-icam.rima1.fr/*", "https://planning.icam.fr/*"],
+  "content_scripts": [{ "matches": ["https://pitch-icam.rima1.fr/*"], "js": ["content/pitch.js"], "run_at": "document_idle" }],
+  "options_ui": { "page": "app/app.html#reglages", "open_in_tab": true }
+}
