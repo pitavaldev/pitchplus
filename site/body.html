@@ -1,0 +1,127 @@
+<title>PITCH+ Installation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--orange:#F39200;--orange-dk:#d97e00;--orange-soft:#FFF4E3;--ink:#202124;--ink-soft:#5f6368;--ink-mute:#9aa0a6;--line:#e8e5df;--bg:#fff;--surface:#faf9f7;--dark:#12181C;--ok:#1e8e3e;--chrome:#f1f3f4;--chrome-ink:#3c4043}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--ink:#e8eaed;--ink-soft:#a9b0b7;--ink-mute:#7c858d;--line:#28313a;--bg:#12181C;--surface:#182028;--dark:#0b1013;--orange-soft:#2a2116;--chrome:#202a31;--chrome-ink:#c9d1d8}}
+:root[data-theme="dark"]{--ink:#e8eaed;--ink-soft:#a9b0b7;--ink-mute:#7c858d;--line:#28313a;--bg:#12181C;--surface:#182028;--dark:#0b1013;--orange-soft:#2a2116;--chrome:#202a31;--chrome-ink:#c9d1d8}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.6 'Montserrat',-apple-system,'Segoe UI',Roboto,sans-serif;-webkit-font-smoothing:antialiased;padding-inline:20px}
+.wrap{max-width:680px;margin:0 auto}
+.top{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-block:22px 0}
+.logo{height:40px;width:auto;border-radius:8px;display:block}
+.lang{display:inline-flex;border:1px solid var(--line);border-radius:999px;padding:2px;background:var(--surface)}
+.lang button{font:inherit;font-size:12.5px;font-weight:600;border:0;background:transparent;color:var(--ink-soft);padding:5px 12px;border-radius:999px;cursor:pointer}
+.lang button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.lang button:focus-visible{outline:2px solid var(--orange);outline-offset:1px}
+h1{font-size:2.1rem;font-weight:700;letter-spacing:-.025em;line-height:1.15;margin:48px 0 14px;text-wrap:balance}
+h1 b{color:var(--orange)}
+.lead{font-size:1.05rem;color:var(--ink-soft);margin:0 0 28px;max-width:34em}
+.dl{display:inline-flex;align-items:center;gap:12px;background:var(--orange);color:#fff;text-decoration:none;font-weight:700;font-size:1.05rem;padding:14px 22px 14px 18px;border-radius:12px;letter-spacing:-.01em}
+.dl:hover{background:var(--orange-dk)}.dl:focus-visible{outline:3px solid var(--orange-soft);outline-offset:2px}
+.dl svg{width:22px;height:22px;flex:none}
+.meta{margin:12px 0 0;font-size:.8rem;color:var(--ink-mute);font-variant-numeric:tabular-nums}
+h2{font-size:.78rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--orange);margin:56px 0 18px}
+.steps{list-style:none;margin:0;padding:0;counter-reset:s}
+.steps li{display:grid;grid-template-columns:36px 1fr 200px;gap:14px 16px;align-items:start;padding-block:20px;border-top:1px solid var(--line)}
+.steps li:last-child{border-bottom:1px solid var(--line)}
+.steps li::before{counter-increment:s;content:counter(s);width:30px;height:30px;border-radius:50%;background:var(--ink);color:var(--bg);font-weight:700;font-size:.9rem;display:grid;place-items:center;margin-top:2px}
+.steps p{margin:0}.steps p+p{margin-top:6px;font-size:.9rem;color:var(--ink-soft)}
+.steps strong{font-weight:600}
+code{font-family:'SFMono-Regular',Menlo,Consolas,monospace;font-size:.86em;background:var(--surface);border:1px solid var(--line);padding:1px 7px;border-radius:6px;color:var(--ink)}
+.fig{width:200px;max-width:100%;aspect-ratio:200/104;border:1px solid var(--line);border-radius:10px;background:var(--surface);overflow:hidden}
+.fig svg{display:block;width:100%;height:100%;font-family:inherit}
+.fig text{fill:var(--chrome-ink);font-size:9px;font-weight:500}
+.fig .m{font-family:'SFMono-Regular',Menlo,Consolas,monospace;font-size:8.5px}
+.fig .b{fill:var(--chrome)}.fig .st{stroke:var(--line);fill:none}.fig .o{fill:var(--orange)}.fig .w{fill:#fff}.fig .k{fill:var(--chrome-ink)}
+.rows{margin:0;padding:0;list-style:none}
+.rows li{display:grid;grid-template-columns:150px 1fr;gap:16px;padding-block:12px;border-top:1px solid var(--line);font-size:.95rem}
+.rows li:last-child{border-bottom:1px solid var(--line)}
+.rows li span:first-child{font-weight:600}
+.rows li span+span{color:var(--ink-soft)}
+.note{border-left:3px solid var(--orange);padding:4px 0 4px 16px;margin:24px 0 0;font-size:.92rem;color:var(--ink-soft)}
+.note strong{color:var(--ink);font-weight:600}
+footer{margin:56px 0 48px;padding-top:18px;border-top:1px solid var(--line);font-size:.82rem;color:var(--ink-mute);display:flex;flex-wrap:wrap;gap:6px 18px}
+footer a{color:var(--ink-soft)}
+a{color:var(--orange-dk)}
+[hidden]{display:none!important}
+@media(max-width:560px){.steps li{grid-template-columns:36px 1fr}.fig{grid-column:2}.rows li{grid-template-columns:1fr;gap:2px}h1{font-size:1.7rem;margin-top:36px}}
+@media(prefers-reduced-motion:no-preference){.lang button{transition:background .15s}}
+</style>
+
+<div class="wrap">
+<div class="top">
+  <img class="logo" alt="PITCH+" src="LOGO_DATA_URI">
+  <div class="lang" role="group" aria-label="Langue / Language"><button type="button" id="l-fr" data-l="fr" aria-pressed="true">Français</button><button type="button" id="l-en" data-l="en" aria-pressed="false">English</button></div>
+</div>
+
+<h1 data-en="Your PITCH, your timetable and the syllabus <b>on one page.</b>">Ton PITCH, ton agenda et le syllabus <b>sur une seule page.</b></h1>
+<p class="lead" data-en="A Chrome extension for Icam Bachelor students. It shows which criteria each session lets you demonstrate, where your next chance is for each missing one, and whether you are on the 70 % track. Read-only, nothing leaves your browser.">Une extension Chrome pour les étudiants du Bachelor Icam. Elle montre quels critères chaque séance permet de démontrer, où est ta prochaine chance pour chaque critère manquant, et si tu es sur la trajectoire des 70 %. Lecture seule, rien ne sort de ton navigateur.</p>
+
+<a class="dl" id="dl" href="DOWNLOAD_URL"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M6 10l6 6 6-6M4 20h16"/></svg><span data-en="Download PITCH+">Télécharger PITCH+</span></a>
+<p class="meta" data-en="v7.3.2 · zip, 300 KB · Chrome, Edge, Brave, Arc · Bachelor International, Icam Lille">v7.3.2 · zip, 300 Ko · Chrome, Edge, Brave, Arc · Bachelor International, Icam Lille</p>
+
+<h2 data-en="Install — two minutes">Installation — deux minutes</h2>
+<ol class="steps">
+<li>
+  <div><p data-en="<strong>Unzip</strong> the file. Keep the <code>pitchplus</code> folder somewhere it will stay, for instance in Documents."><strong>Décompresse</strong> le zip. Garde le dossier <code>pitchplus</code> à un endroit où il restera, par exemple dans Documents.</p><p data-en="Chrome loads the extension from this folder: if you delete or move it, the extension stops.">Chrome charge l'extension depuis ce dossier : si tu le supprimes ou le déplaces, l'extension s'arrête.</p></div>
+  <div class="fig"><svg viewBox="0 0 200 104" aria-hidden="true"><rect x="22" y="30" width="46" height="44" rx="5" class="b"/><rect x="22" y="30" width="46" height="44" rx="5" class="st"/><path d="M40 36h10v4h-10zM40 44h10v4h-10zM40 52h10v4h-10zM40 60h10v4h-10z" class="k" opacity=".5"/><text x="45" y="90" text-anchor="middle" class="m">pitchplus.zip</text><path d="M80 52h34" stroke="var(--orange)" stroke-width="2" fill="none"/><path d="M110 46l8 6-8 6" stroke="var(--orange)" stroke-width="2" fill="none"/><path d="M128 40h16l5 5h27a3 3 0 0 1 3 3v24a3 3 0 0 1-3 3h-48a3 3 0 0 1-3-3V43a3 3 0 0 1 3-3z" class="o"/><text x="153" y="90" text-anchor="middle" class="m">pitchplus/</text></svg></div>
+</li>
+<li>
+  <div><p data-en="Open <code>chrome://extensions</code> and turn on <strong>Developer mode</strong>, top right.">Ouvre <code>chrome://extensions</code> et active le <strong>Mode développeur</strong>, en haut à droite.</p></div>
+  <div class="fig"><svg viewBox="0 0 200 104" aria-hidden="true"><rect x="0" y="0" width="200" height="26" class="b"/><rect x="10" y="6" width="130" height="14" rx="7" class="w" stroke="var(--line)"/><text x="18" y="16" class="m">chrome://extensions</text><text x="12" y="48" style="font-size:11px;font-weight:600">Extensions</text><text x="150" y="80" text-anchor="end" data-en="Developer mode">Mode développeur</text><rect x="158" y="70" width="30" height="14" rx="7" class="o"/><circle cx="181" cy="77" r="5.5" class="w"/></svg></div>
+</li>
+<li>
+  <div><p data-en="Click <strong>Load unpacked</strong> and choose the <code>pitchplus</code> folder.">Clique sur <strong>Charger l'extension non empaquetée</strong> et choisis le dossier <code>pitchplus</code>.</p><p data-en="The PITCH+ card appears in the list. Done for Chrome.">La carte PITCH+ apparaît dans la liste. C'est fini côté Chrome.</p></div>
+  <div class="fig"><svg viewBox="0 0 200 104" aria-hidden="true"><rect x="12" y="16" width="176" height="22" rx="11" fill="none" stroke="var(--orange)" stroke-width="1.5"/><text x="100" y="30" text-anchor="middle" style="fill:var(--orange);font-weight:600;font-size:8px" data-en="Load unpacked">Charger l'extension non empaquetée</text><rect x="12" y="52" width="176" height="38" rx="6" class="w" stroke="var(--line)"/><rect x="20" y="60" width="22" height="22" rx="5" class="o"/><text x="27" y="76" class="w" style="font-weight:700;fill:#fff">P+</text><text x="50" y="68" style="font-weight:600">PITCH+</text><text x="50" y="80" style="font-size:8px;fill:var(--ink-mute)">7.3.2</text><rect x="152" y="64" width="26" height="13" rx="6.5" class="o"/><circle cx="171" cy="70.5" r="5" class="w"/></svg></div>
+</li>
+<li>
+  <div><p data-en="Sign in to <strong>PITCH</strong> in a tab as usual, then click the PITCH+ icon in the toolbar (the puzzle piece, then the pin to keep it visible).">Connecte-toi à <strong>PITCH</strong> dans un onglet, comme d'habitude, puis clique sur l'icône PITCH+ dans la barre d'outils (la pièce de puzzle, puis l'épingle pour la garder visible).</p><p data-en="PITCH+ reads through that open session. It never asks for your password and never writes to PITCH.">PITCH+ lit à travers cette session ouverte. Il ne demande jamais ton mot de passe et n'écrit jamais dans PITCH.</p></div>
+  <div class="fig"><svg viewBox="0 0 200 104" aria-hidden="true"><rect x="0" y="0" width="200" height="30" class="b"/><rect x="10" y="8" width="112" height="14" rx="7" class="w" stroke="var(--line)"/><text x="18" y="18" class="m">pitch-icam.rima1.fr</text><rect x="134" y="6" width="18" height="18" rx="4" class="o"/><text x="137.5" y="19" style="font-weight:700;fill:#fff;font-size:8.5px">P+</text><path d="M166 9h3v-1a2 2 0 0 1 4 0v1h3v3h1a2 2 0 0 1 0 4h-1v3h-3v1a2 2 0 0 1-4 0v-1h-3v-3h-1a2 2 0 0 1 0-4h1z" class="k" opacity=".55"/><text x="12" y="66" style="font-weight:600">PITCH</text><text x="12" y="82" style="font-size:8px;fill:var(--ink-mute)" data-en="Signed in ✓">Connecté ✓</text><path d="M143 30v10" stroke="var(--orange)" stroke-width="1.5" stroke-dasharray="2 2"/><rect x="110" y="44" width="80" height="44" rx="6" class="w" stroke="var(--orange)"/><rect x="118" y="52" width="40" height="6" rx="3" class="o" opacity=".8"/><rect x="118" y="63" width="64" height="4" rx="2" class="k" opacity=".25"/><rect x="118" y="71" width="52" height="4" rx="2" class="k" opacity=".25"/><rect x="118" y="79" width="58" height="4" rx="2" class="k" opacity=".25"/></svg></div>
+</li>
+<li>
+  <div><p data-en="In <strong>Settings</strong>, paste your Hyperplanning link. In Hyperplanning: <strong>Export → iCal subscription link</strong>.">Dans <strong>Réglages</strong>, colle ton lien Hyperplanning. Dans Hyperplanning : <strong>Exporter → Lien d'abonnement iCal</strong>.</p><p data-en="The link holds a secret key. It stays on this computer, is never shown in full, and must not be shared.">Ce lien contient une clé secrète. Il reste sur cet ordinateur, n'est jamais affiché en entier, et ne se partage pas.</p></div>
+  <div class="fig"><svg viewBox="0 0 200 104" aria-hidden="true"><text x="12" y="30" style="font-weight:600" data-en="Hyperplanning timetable">Agenda Hyperplanning</text><rect x="12" y="40" width="176" height="20" rx="10" class="w" stroke="var(--line)"/><text x="20" y="53" class="m">planning.icam.fr/…/Edt.ics?icalsecurise=…71B2</text><rect x="12" y="70" width="58" height="18" rx="9" class="o"/><text x="41" y="82" text-anchor="middle" style="fill:#fff;font-weight:600" data-en="Save">Enregistrer</text><text x="80" y="82" style="font-size:8px;fill:var(--ok)" data-en="✓ read every day">✓ relu chaque jour</text></svg></div>
+</li>
+</ol>
+
+<h2 data-en="What you get">Ce que tu obtiens</h2>
+<ul class="rows">
+<li><span data-en="Timetable">Agenda</span><span data-en="Each session with the criteria it lets you demonstrate, and a Moodle button.">Chaque séance avec les critères qu'elle permet de démontrer, et un bouton Moodle.</span></li>
+<li><span data-en="Next chance">Prochaine chance</span><span data-en="For every missing criterion: the next dated session, else the next course, else no session left.">Pour chaque critère manquant : la prochaine séance datée, sinon le prochain cours, sinon plus aucune séance.</span></li>
+<li><span data-en="70 % track">Trajectoire 70 %</span><span data-en="Demonstrated criteria over the whole Bachelor, year by year and by skill.">Critères démontrés sur l'ensemble du Bachelor, année par année et par compétence.</span></li>
+<li><span data-en="Compass">Compas</span><span data-en="Search the syllabus: criteria, learning outcomes, courses, with filters.">Recherche dans le syllabus : critères, acquis, cours, avec filtres.</span></li>
+</ul>
+<p class="note" data-en="<strong>PITCH+ deduces, it does not decide.</strong> Always check with your subject teacher before signing up for a requalification. It is a student tool, unrelated to Icam or the PITCH publisher."><strong>PITCH+ déduit, il ne décide pas.</strong> Vérifie toujours avec ton responsable de matière avant de t'inscrire à une requalification. C'est un outil étudiant, sans lien avec l'Icam ni l'éditeur de PITCH.</p>
+
+<h2 data-en="Privacy">Confidentialité</h2>
+<ul class="rows">
+<li><span data-en="No account">Pas de compte</span><span data-en="No password asked, no server, no tracking. Everything is computed in your browser.">Aucun mot de passe demandé, aucun serveur, aucun suivi. Tout est calculé dans ton navigateur.</span></li>
+<li><span data-en="Read-only">Lecture seule</span><span data-en="PITCH is only read. The only network request is your Hyperplanning feed.">PITCH est seulement lu. La seule requête réseau est ton flux Hyperplanning.</span></li>
+<li><span data-en="Erase">Effacer</span><span data-en="Settings → Personal data → Erase everything. Removing the extension does the same.">Réglages → Données personnelles → Tout effacer. Retirer l'extension fait de même.</span></li>
+</ul>
+
+<footer>
+<span data-en="Made by Thomas Pitaval, Icam Lille, International Bachelor class of 2030 · open source">Fait par Thomas Pitaval, Icam Lille, Bachelor International promo 2030 · open source</span>
+<a href="mailto:thomas.pitaval@2030.icam.fr">thomas.pitaval@2030.icam.fr</a>
+<a href="mailto:pitproductionpro@gmail.com">pitproductionpro@gmail.com</a>
+<a href="REPO_URL" data-en="Source code">Code source</a>
+</footer>
+</div>
+
+<script>
+(function(){
+  var els=document.querySelectorAll('[data-en]');
+  els.forEach(function(e){e.setAttribute('data-fr',e.innerHTML);});
+  function set(l){
+    els.forEach(function(e){e.innerHTML=e.getAttribute(l==='en'?'data-en':'data-fr');});
+    document.documentElement.lang=l;
+    document.querySelectorAll('.lang button').forEach(function(b){b.setAttribute('aria-pressed',String(b.dataset.l===l));});
+    try{localStorage.setItem('pp.lang',l);}catch(x){}
+  }
+  var l='fr';
+  try{l=new URLSearchParams(location.search).get('lang')||localStorage.getItem('pp.lang')||((navigator.language||'').slice(0,2)==='en'?'en':'fr');}catch(x){}
+  if(l!=='en')l='fr';
+  set(l);
+  document.querySelector('.lang').addEventListener('click',function(ev){var b=ev.target.closest('button');if(b)set(b.dataset.l);});
+})();
+</script>
