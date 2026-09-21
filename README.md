@@ -1,19 +1,22 @@
-# PITCH+ v6
+# PITCH+
 
 **Extension Chrome pour les étudiants Icam : ton agenda, ta prochaine chance, ta trajectoire 70 %.**
 Relie trois sources que l'école fournit séparément : **Hyperplanning** (quand a lieu un cours), le **syllabus** (quels critères chaque cours évalue) et **PITCH** (quels critères tu as déjà démontrés).
 
 Par Thomas Pitaval, Icam Lille, Bachelor International promo 2030 · open source · v7.3.2 · [changelog](docs/CHANGELOG.md)
 
+**[Télécharger PITCH+ (zip)](https://github.com/pitavaldev/pitchplus/releases/latest/download/pitchplus.zip)** · [guide d'installation en français et en anglais](docs/install.html)
+
 ## Promesse
 
 | Question | Écran | Ce qu'il montre |
 |---|---|---|
-| Qu'est-ce qui arrive ? | **Agenda** | Chaque séance Hyperplanning annotée : `n à démontrer`, `m démontrés`, `k contribue`. TE et phases de PBL identifiés. Clic → critères, acquis, compétence, Moodle. |
-| Où est ma prochaine chance ? | **Prochaine chance** | **Une ligne par séance à venir** : la date, le cours, et le nombre de critères à y démontrer. En bas, ce qui n'a plus aucune séance (⚠ requalification). Regroupement au choix par séance, cours ou compétence, ou tout en liste. CSV. |
-| Suis-je sur la trajectoire ? | **Trajectoire 70 %** | Jauge de l'année (démontré / daté / à venir / pas encore enseigné / perdu), projection meilleur / pire cas, par compétence, par semestre. Seuil 50 / 100 % par acquis avec la lecture alternative toujours visible. |
+| Qu'est-ce qui arrive ? | **Agenda** | Chaque séance Hyperplanning avec le nombre de critères à y démontrer, la phase de PBL ou le TE, et un bouton Moodle vers la page du cours. Clic → critères, acquis, compétence. |
+| Où est ma prochaine chance ? | **Prochaine chance** | **Une ligne par séance à venir** : la date, le cours, et le nombre de critères à y démontrer. En bas, ce qui n'a plus aucune séance (⚠ sans séance). Regroupement au choix par séance, cours ou compétence, ou tout en liste. CSV. |
+| Suis-je sur la trajectoire ? | **Trajectoire 70 %** | Jauge sur l'ensemble du Bachelor (démontré / prévu / à venir / pas encore enseigné / sans séance), critères manquants pour atteindre 70 %, lecture année par année telle qu'à sa fin, et par compétence. |
+| Où est ce critère ? | **Compas** | Explorateur du syllabus : recherche plein texte, filtres par compétence, semestre, domaine et état, en critères, acquis ou cours. CSV. |
 
-Interface en **français ou en anglais** (réglages), intitulés du syllabus dans la langue choisie. Cinq onglets : **Aujourd'hui**, **Agenda**, **Prochaine chance**, **Trajectoire 70 %**, et **Compas**, l'explorateur du syllabus (recherche plein texte, filtres par compétence, semestre, domaine et état, en critères, acquis ou cours). Le reste (Acquis par compétence, Changements, Diagnostic, Réglages) est derrière **Plus**. Hérité de v5.3 : filtres, recherche, notes personnelles, symboles ⚠ / ↻, export CSV, impression.
+Interface en **français ou en anglais** (réglages), intitulés du syllabus dans la langue choisie. Cinq onglets : **Aujourd'hui**, **Agenda**, **Prochaine chance**, **Trajectoire 70 %**, **Compas**. Le reste (Acquis par compétence, Changements, Diagnostic, Réglages) est derrière **Plus**. Notes personnelles sur les acquis, export CSV, impression.
 
 ## Garanties de confidentialité
 
@@ -22,14 +25,16 @@ Interface en **français ou en anglais** (réglages), intitulés du syllabus dan
 - Le lien iCal Hyperplanning contient un secret : stocké localement, masqué à l'affichage, jamais exporté.
 - Détail : [docs/PRIVACY.md](docs/PRIVACY.md). Le script d'empaquetage refuse tout `POST`/`PUT`, tout hôte inattendu et tout token dans les sources.
 
-## Installation (mode développeur)
+## Installation (mode développeur, deux minutes)
 
-1. Télécharge `dist/pitchplus-v6.0.0.zip` et décompresse-le (ou utilise le dossier `extension/`).
-2. Chrome → `chrome://extensions` → active **Mode développeur** → **Charger l'extension non empaquetée** → choisis le dossier.
-3. Clique l'icône **P+** : le tableau de bord s'ouvre. Ouvre PITCH et connecte-toi si demandé.
-4. Réglages ⚙ → colle ton **lien d'abonnement iCal** Hyperplanning (Exporter → Lien d'abonnement).
+Pas de Chrome Web Store : l'extension se charge depuis un dossier. Chrome, Edge, Brave et Arc.
 
-Page d'installation courte : [docs/install.html](docs/install.html). Mode démo sans aucune donnée réelle : icône → ⚙ → *Ouvrir le mode démo* (ou `app/app.html?demo=1`).
+1. Télécharge [pitchplus.zip](https://github.com/pitavaldev/pitchplus/releases/latest/download/pitchplus.zip) et décompresse-le. Garde le dossier `pitchplus` à un endroit où il restera (si tu le supprimes, l'extension s'arrête).
+2. `chrome://extensions` → active **Mode développeur** (en haut à droite) → **Charger l'extension non empaquetée** → choisis le dossier `pitchplus`.
+3. Connecte-toi à PITCH dans un onglet, puis clique l'icône **P+** dans la barre d'outils (pièce de puzzle, puis l'épingle). Le tableau de bord s'ouvre.
+4. Réglages → colle ton **lien d'abonnement iCal** Hyperplanning (Exporter → Lien d'abonnement iCal). Ce lien contient une clé secrète : il reste sur ton ordinateur.
+
+Guide illustré : [docs/install.html](docs/install.html). Mise à jour : remplace le contenu du dossier par le nouveau zip, puis ⟳ sur la carte PITCH+ dans `chrome://extensions`. Mode démo sans aucune donnée réelle : Réglages → *Ouvrir le mode démo* (ou `app/app.html?demo=1`).
 
 ## Architecture
 
@@ -50,8 +55,7 @@ Hyperplanning (ICS) ──▶ service worker ─── chrome.storage.local ◀�
 - `tools/coverage_report.py` — taux d'appariement d'un ICS avec le dataset ([rapport réel](docs/reports/coverage-ics.md) : 174 / 176 séances académiques).
 - `tools/make_demo.py` — jeu de démo (ICS synthétique + réponses PITCH fictives). `tools/package.py` — vérifications strictes + zip.
 - `tests/run.html` — tests unitaires dans le navigateur (parseur ICS, normalisation, port v5, moteur). Ouvrir via un serveur statique : `python3 -m http.server 8765` puis `http://localhost:8765/tests/run.html`.
-- `fixtures/public/` — démo ; `fixtures/private/` — données réelles, **hors dépôt** (`.gitignore`).
-- `legacy-v5/` — PITCH+ v5.3 (bookmarklet) pour référence.
+- `fixtures/public/` — démo ; `fixtures/private/` — données réelles, **hors dépôt** (`.gitignore`), comme les documents source de l'école (`data/sources/`) et la clé de signature.
 
 ## Régénérer les données pour une nouvelle année ou un nouveau programme
 
@@ -67,10 +71,10 @@ Pour un autre programme : même Excel (même format), `--program <CODE>` tel que
 
 ## Règles métier (telles que comprises)
 
-- Critère : démontré ou non (binaire). Acquis (AA) validé à ≥ 50 % de ses critères (`MinPrgPct`, seuil de progression enregistré dans PITCH). Le seuil de 100 % (`MinAcqPct`) n'est plus proposé dans l'interface depuis la 7.3.
+- Critère : démontré ou non (binaire). Acquis (AA) validé à ≥ 50 % de ses critères (`MinPrgPct`, seuil de progression enregistré dans PITCH).
 - Seuil de 70 % lu **sur l'ensemble du cursus** (les 8 semestres du Bachelor), lecture retenue avec Thomas en septembre 2026 ; la lecture par compétence est affichée à côté. Chaque année est montrée telle qu'elle se présentait à sa fin : un critère rattrapé après reste en vert clair dans son année d'origine, et le rattrapage est crédité en texte à l'année où il a eu lieu. **Ambiguïté institutionnelle : l'outil n'arbitre pas.**
-- Statut d'un critère non démontré : *daté* (une séance à venir dans l'agenda l'évalue), *à venir* (un cours d'un semestre ≥ courant l'évalue, sans date, ou PITCH annonce une séance), *perdu* (aucun des deux → requalification), *pas encore enseigné* (jamais tenté, tous ses cours dans des semestres futurs : hachuré, jamais compté en retard).
-- Verdict d'un acquis : validé / ⚠ requalification (au moins un critère perdu) / ↻ rattrapage (critères manqués mais rattrapables) / en cours / pas commencé.
+- Statut d'un critère non démontré : *séance prévue* (une séance à venir dans l'agenda l'évalue), *cours à venir* (un cours d'un semestre ≥ courant l'évalue, sans date, ou PITCH annonce une séance), *sans séance* (aucun des deux), *pas encore enseigné* (jamais tenté, tous ses cours dans des semestres futurs : hachuré, jamais compté en retard).
+- Verdict d'un acquis : validé / ⚠ requalification (au moins un critère sans séance) / ↻ rattrapage (critères manqués mais rattrapables) / en cours / pas commencé. Le mot « requalification » est réservé aux acquis.
 - Le planning de requalification envoyé par le campus n'est ni lu ni présenté comme une validation.
 
 ## Limites connues
@@ -81,5 +85,5 @@ Pour un autre programme : même Excel (même format), `--program <CODE>` tel que
 
 ## Contact
 
-pitproductionpro@gmail.com · thomas.pitaval@2030.icam.fr · pitproduction.com
-Outil étudiant non officiel, sans lien avec l'éditeur de PITCH ni avec l'Icam.
+thomas.pitaval@2030.icam.fr · pitproductionpro@gmail.com · [issues GitHub](https://github.com/pitavaldev/pitchplus/issues)
+Outil étudiant non officiel, sans lien avec l'éditeur de PITCH ni avec l'Icam. PITCH+ déduit, il ne décide pas : vérifie avec ton responsable de matière avant toute inscription à une requalification.
