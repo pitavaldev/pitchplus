@@ -3,7 +3,7 @@
 **Extension Chrome pour les étudiants Icam : ton agenda, ta prochaine chance, ta trajectoire 70 %.**
 Relie trois sources que l'école fournit séparément : **Hyperplanning** (quand a lieu un cours), le **syllabus** (quels critères chaque cours évalue) et **PITCH** (quels critères tu as déjà démontrés).
 
-Par Thomas Pitaval, Icam Lille, Bachelor International promo 2030 · open source · v1.7.3.2 · [changelog](docs/CHANGELOG.md)
+Par Thomas Pitaval, Icam Lille, Bachelor International promo 2030 · open source · v1.7.4.0 · [changelog](docs/CHANGELOG.md)
 
 **[Télécharger PITCH+ (zip)](https://github.com/pitavaldev/pitchplus/releases/latest/download/pitchplus.zip)** · [guide d'installation en français et en anglais](docs/install.html)
 
@@ -54,7 +54,7 @@ Hyperplanning (ICS) ──▶ service worker ─── chrome.storage.local ◀�
 - `tools/build_data.py` — Excel `Mapping_LG_Course` + PDF syllabus → JSON, avec statistiques de contrôle. Python 3 stdlib ; texte du PDF extrait par PDFKit (macOS) ou fourni via `--pdf-text`.
 - `tools/coverage_report.py` — taux d'appariement d'un ICS avec le dataset ([rapport réel](docs/reports/coverage-ics.md) : 174 / 176 séances académiques).
 - `tools/make_demo.py` — jeu de démo (ICS synthétique + réponses PITCH fictives). `tools/package.py` — vérifications strictes + zip.
-- `tests/run.html` — tests unitaires dans le navigateur (parseur ICS, normalisation, port v5, moteur). Ouvrir via un serveur statique : `python3 -m http.server 8765` puis `http://localhost:8765/tests/run.html`.
+- `tests/run.html` — 27 tests unitaires dans le navigateur (parseur ICS, normalisation, port v5, moteur). Ouvrir via un serveur statique : `python3 -m http.server 8765` puis `http://localhost:8765/tests/run.html`.
 - `fixtures/public/` — démo ; `fixtures/private/` — données réelles, **hors dépôt** (`.gitignore`), comme les documents source de l'école (`data/sources/`) et la clé de signature.
 
 ## Régénérer les données pour une nouvelle année ou un nouveau programme

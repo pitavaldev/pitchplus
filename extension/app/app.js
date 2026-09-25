@@ -1,14 +1,14 @@
 /* PITCH+ v6.0 — tableau de bord. Par Thomas Pitaval. Lecture seule, tout reste dans le navigateur. */
 import { parseIcs, fmtTime, fmtDay, dayKey, setLocale, PHASE_LABEL, KIND_LABEL } from '../lib/ics.js';
-import { blankState, loadProgram, deepen, classifyV5 } from '../lib/pitch.js';
+import { blankState, loadProgram, deepen, deepenOne, retally, classifyV5 } from '../lib/pitch.js';
 import { compute, AA_VERDICT, CRIT_STATUS } from '../lib/engine.js';
 import { store, K, maskIcsUrl, isIcsUrl } from '../lib/store.js';
 import { SEMESTERS, semOrder } from '../lib/units.js';
 
-const FR2EN = {"Accueil": "Home", "PITCH non lu": "PITCH not read", " · agenda ": " · timetable ", " séances": " sessions", " · sans agenda": " · no timetable", "Relire PITCH et l'agenda": "Reload PITCH and the timetable", "Actualiser": "Refresh", "Autres actions": "More actions", "Relire l'agenda": "Reload the timetable", "Exporter en CSV": "Export as CSV", "Imprimer": "Print", "Réglages": "Settings", "Aujourd'hui": "Today", "Agenda": "Timetable", "Prochaine chance": "Next chance", "Trajectoire 70 %": "70 % track", "Compas": "Compass", "Plus": "More", "Acquis par compétence": "Learning outcomes by skill", "Changements": "Changes", "Diagnostic": "Diagnostics", "PITCH n'a pas été lu : agenda seul, sans état des critères.": "PITCH was not read: timetable only, no criteria status.", "aucun syllabus pour le programme ": "no syllabus for programme ", " : mode dégradé": ": degraded mode", "Prochaine séance utile : <b>": "Next useful session: <b>", " à démontrer": " to demonstrate", "Aucune séance à venir avec un critère à démontrer.": "No upcoming session with a criterion to demonstrate.", "Ajoute ton lien Hyperplanning dans les réglages pour voir ton agenda.": "Add your Hyperplanning link in Settings to see your timetable.", "Voir les critères": "See the criteria", "requalification": "requalification", "requalifications": "requalifications", "nouveauté": "update", "nouveautés": "updates", "PITCH+ v": "PITCH+ v", " — outil étudiant open source par Thomas Pitaval": " — open-source student tool by Thomas Pitaval", "Lecture seule · rien ne quitte ton navigateur": "Read-only · nothing leaves your browser", "Syllabus ": "Syllabus ", " · mapping ": " · mapping ", "Démontré": "Demonstrated", "Séance prévue": "Session scheduled", "Cours à venir": "Course to come", "Sans séance": "No session", "Pas encore enseigné": "Not taught yet", "Requalification": "Requalification", "Rattrapage": "Catch-up", "En cours": "In progress", "Pas commencé": "Not started", "Validé": "Validated", "Inscrit": "Signed up", "Mail envoyé": "Email sent", "Fait, à vérifier": "Done, to check", "Lancement": "Kick-off", "Phase aller": "Go phase", "Autonomie": "Self-study", "Temps expert": "Expert time", "Phase retour": "Return phase", "Feedback": "Feedback", "Évaluation": "Assessment", "Capitalisation": "Wrap-up", "PBL": "PBL", "TD": "Tutorial", "TP": "Lab", "Projet": "Project", "TE": "Exam", "critère": "criterion", "critères": "criteria", "séance": "session", "séances": "sessions", "acquis": "learning outcome", "cours": "course", "compétence": "skill", "Aucune séance connue : ni agenda, ni syllabus, ni PITCH": "No known session: not in the timetable, the syllabus or PITCH", " (sans date)": " (no date)", "Séance à venir selon PITCH": "Upcoming session according to PITCH", "déjà tenté": "already attempted", "Qu'est-ce qui arrive ?": "What is coming up?", " où démontrer": " where you can demonstrate", "Prochaines séances": "Next sessions", "Aucune séance à venir dans l'agenda.": "No upcoming session in the timetable.", "Ajoute ton lien Hyperplanning dans les réglages.": "Add your Hyperplanning link in Settings.", "Voir l'agenda →": "See the timetable →", "Où est ma prochaine chance ?": "Where is my next chance?", "critères sans séance": "criteria with no session", "critère sans séance": "criterion with no session", " prévus": " scheduled", " à venir": " to come", " sans séance": " with no session", "Voir les critères sans séance →": "See criteria with no session →", "Voir par séance →": "See by session →", "Suis-je sur la trajectoire ?": "Am I on track?", "seuil 70 %": "70 % threshold", "sur ce qui a déjà été enseigné": "of what has already been taught", "Détail par compétence →": "Detail by skill →", "</b> démontrés</li>": "</b> demonstrated</li>", "</b> prévus</li>": "</b> scheduled</li>", "</b> à venir</li>": "</b> to come</li>", "</b> pas encore enseignés</li>": "</b> not taught yet</li>", "</b>' + t(' sans séance') + '</li></ul>": "</b> no session</li></ul>", "démontrés dans l'année": "demonstrated that year", "rattrapés depuis": "caught up since", "datés": "scheduled", "à venir": "to come", "pas encore enseignés": "not taught yet", "sans séance": "no session", "prévus": "scheduled", "démontrés": "demonstrated", "Pas d'agenda.": "No timetable.", "5 j": "5 d", "7 j": "7 d", "Seulement où j'ai à démontrer · ": "Only where I have something to demonstrate · ", "journée": "all day", "hors compétences": "outside the skills framework", "pas dans le syllabus": "not in the syllabus", "aucun critère": "no criterion", "tout est démontré": "all demonstrated", "Daté": "Scheduled", "↻ Cours à venir": "↻ Course to come", "⚠ Sans séance": "⚠ No session", "Par séance": "By session", "Par cours": "By course", "Par compétence": "By skill", "Tout en liste": "Flat list", "Rechercher un critère, un cours…": "Search a criterion, a course…", "Rien ici.": "Nothing here.", "Tout est démontré, ou pas encore enseigné.": "Everything is demonstrated, or not taught yet.", "Sans compétence": "No skill", "Séance annoncée par PITCH": "Session announced by PITCH", "prochaine séance ": "next session ", "sans date": "no date", "selon PITCH": "according to PITCH", "aucune date connue": "no known date", "ni dans ton agenda, ni dans le syllabus, ni annoncée par PITCH": "not in your timetable, the syllabus, or announced by PITCH", "<p class=\"sub mut sm-t\">Une ligne par séance à venir : ce qu'il y a à démontrer ce jour-là. En bas, ce qui n'a plus aucune séance.</p>": "<p class=\"sub mut sm-t\">One line per upcoming session: what there is to demonstrate that day. At the bottom, what has no session left.</p>", "aucune séance": "no session", "Bachelor · 8 semestres": "Bachelor · 8 semesters", " % démontrés · seuil 70 %": " % demonstrated · 70 % threshold", "critères à démontrer pour atteindre 70 % du cursus": "criteria to demonstrate to reach 70 % of the programme", "si tu démontres tout ce qui est planifié": "if you demonstrate everything that is scheduled", "Année par année": "Year by year", "Chaque année telle qu'elle se présentait à sa fin. Un critère rattrapé plus tard reste en vert clair dans son année d'origine.": "Each year as it stood at its end. A criterion caught up later stays light green in its original year.", " rattrapé": " caught up", " depuis": " since", "+": "+", " d'années passées rattrapé": " from past years caught up", " cette année-là": " that year", "Un mot du critère, un acquis, un cours, un code…": "A word from the criterion, an outcome, a course, a code…", "Toutes les compétences": "All skills", "Tous les semestres": "All semesters", "Tous les domaines": "All domains", "Tous mes états": "All my statuses", "Critères": "Criteria", "Acquis": "Outcomes", "Cours": "Courses", "Effacer ×": "Clear ×", "Rien ne correspond.": "Nothing matches.", "Essaie un autre mot ou retire un filtre.": "Try another word or remove a filter.", "Afficher plus · ": "Show more · ", " restants": " left", ", dont ": ", including ", " dans ta recherche": " in your search", "pas dans ton PITCH": "not in your PITCH", "évalué par ": "assessed in ", "aucun cours ne l'évalue": "no course assesses it", "Électronique": "Electronics", "Énergétique": "Energy", "Mécanique, matériaux": "Mechanics, materials", "Maths, informatique": "Maths, computing", "Management": "Management", "Humanités, langues": "Humanities, languages", "Développement personnel": "Personal development", " · syllabus ": " · syllabus ", "Un <b>acquis</b> regroupe plusieurs critères. Il est validé dès que <b>": "A <b>learning outcome</b> groups several criteria. It is validated once <b>", " %</b> d'entre eux sont démontrés.": " %</b> of them are demonstrated.", "⚠ Requalifications (": "⚠ Requalifications (", "↻ Rattrapages (": "↻ Catch-ups (", "Les deux (": "Both (", "En cours (": "In progress (", "Pas commencé (": "Not started (", "Validés (": "Validated (", "Mes suivis": "My follow-ups", "Rechercher un acquis…": "Search a learning outcome…", "Tous les statuts": "All statuses", "Toutes les matières": "All subjects", "Retirer les filtres ×": "Remove filters ×", "Essaie un autre filtre.": "Try another filter.", " rattrapable": " recoverable", "Pas de détail PITCH.": "No PITCH detail.", " critères démontrés sur ": " criteria demonstrated out of ", "Mon suivi": "My follow-up", "Note personnelle, enregistrée sur cet ordinateur": "Personal note, stored on this computer", "Rien de neuf": "Nothing new", " depuis le ": " since ", "Aucun critère n'a bougé à la dernière lecture de PITCH.": "No criterion changed at the last PITCH read.", "Premier passage : le repère vient d'être posé.": "First visit: the baseline has just been set.", "Reposer le repère à aujourd'hui": "Reset the baseline to today", "Comparaison avec la lecture PITCH précédente, le ": "Compared with the previous PITCH read, on ", ". Repère enregistré sur cet ordinateur uniquement.": ". Baseline stored on this computer only.", "Critères démontrés depuis": "Criteria demonstrated since", "Acquis passés à validé": "Outcomes now validated", "Acquis en progrès": "Outcomes in progress", "Critères passés sans séance": "Criteria now without session", "Évaluation (TE)": "Assessment (exam)", "Séance": "Session", "Moodle ↗": "Moodle ↗", "Hors compétences : rien à démontrer ici.": "Outside the skills framework: nothing to demonstrate here.", "Cours absent du syllabus embarqué (": "Course missing from the bundled syllabus (", " ). Voir Diagnostic.": "). See Diagnostics.", "À démontrer ici · ": "To demonstrate here · ", "Déjà démontrés · ": "Already demonstrated · ", "Contribue à · ": "Contributes to · ", " · contribue sans évaluer": " · contributes without assessing", "Aucun critère rattaché à ce cours dans le syllabus.": "No criterion attached to this course in the syllabus.", "À démontrer · ": "To demonstrate · ", "Cours qui l'évaluent · ": "Courses assessing it · ", " à venir, la prochaine ": " to come, the next one ", "séances terminées": "sessions over", "pas encore dans l'agenda": "not yet in the timetable", "semestre passé": "past semester", "Aucun cours ne l'évalue dans le syllabus": "No course assesses it in the syllabus", "Contribue sans évaluer : ": "Contributes without assessing: ", "Codes PITCH": "PITCH codes", "Historique PITCH": "PITCH history", "démontré": "demonstrated", "séance à venir": "upcoming session", "non démontré": "not demonstrated", "Non encore vu dans PITCH.": "Not seen in PITCH yet.", "Fermer": "Close", "Langue": "Language", "Interface et intitulés du syllabus. Les titres d'acquis viennent de PITCH en français, du syllabus en anglais.": "Interface and syllabus titles. Outcome titles come from PITCH in French, from the syllabus in English.", "Agenda Hyperplanning": "Hyperplanning timetable", "Enregistrer": "Save", "Relire maintenant": "Reload now", "Retirer le lien": "Remove the link", "Relire PITCH": "Reload PITCH", "Vider le cache local": "Clear the local cache", "Données personnelles": "Personal data", "Tout effacer (agenda, cache PITCH, notes)": "Erase everything (timetable, PITCH cache, notes)", "Démo": "Demo", "À propos": "About", "Connecte-toi à PITCH dans l'onglet ouvert, puis reviens ici.": "Sign in to PITCH in the open tab, then come back here.", "Ouvrir PITCH": "Open PITCH", "J'ai fini, relire": "Done, reload", "Agenda seul": "Timetable only", "Aucun mot de passe n'est demandé : PITCH+ utilise la session déjà ouverte.": "No password is asked for: PITCH+ uses the session already open.", "Rien ne quitte ton navigateur : pas de compte, pas de serveur, pas de mot de passe. PITCH n'est jamais modifié. La seule requête réseau est la lecture de ton flux Hyperplanning.": "Nothing leaves your browser: no account, no server, no password. PITCH is never modified. The only network request is reading your Hyperplanning feed.", "Mode démo : PITCH fictif.": "Demo mode: fictional PITCH.", "Mode démo : agenda fictif.": "Demo mode: fictional timetable.", "Agenda ↔ syllabus": "Timetable ↔ syllabus", "PITCH ↔ syllabus": "PITCH ↔ syllabus", "Jeu de données embarqué": "Bundled dataset", "Séances lues": "Sessions read", "Hors compétences": "Outside the framework", "Appariées": "Matched", "Non appariées": "Unmatched", "démo": "demo", "Aucun lien enregistré. Le flux est relu automatiquement chaque jour.": "No link saved. The feed is re-read automatically every day.", "Ouvrir le mode démo": "Open demo mode", "(étudiant fictif, données générées).": "(fictional student, generated data).", "Lien enregistré : ": "Saved link: ", " · lu le ": " · read on ", "Dans Hyperplanning : <b>Exporter → Lien d'abonnement iCal</b>, puis colle le lien ici. Il contient une clé secrète : il reste sur cet ordinateur et n'est jamais affiché en entier.": "In Hyperplanning: <b>Export → iCal subscription link</b>, then paste the link here. It contains a secret key: it stays on this computer and is never shown in full.", "Lu via ton onglet PITCH déjà connecté (pitch-icam.rima1.fr).": "Read through your already signed-in PITCH tab (pitch-icam.rima1.fr).", " Dernière lecture : ": " Last read: ", " · Thomas Pitaval, Icam Lille, Bachelor International promo 2030 · open source · ": " · Thomas Pitaval, Icam Lille, International Bachelor class of 2030 · open source · ", "Outil étudiant non officiel, sans lien avec l'éditeur de PITCH ni avec l'Icam.": "Unofficial student tool, unrelated to the PITCH publisher or Icam."};
+const FR2EN = {"Accueil": "Home", "PITCH non lu": "PITCH not read", " · agenda ": " · timetable ", " séances": " sessions", " · sans agenda": " · no timetable", "Relire PITCH et l'agenda": "Reload PITCH and the timetable", "Actualiser": "Refresh", "Autres actions": "More actions", "Relire l'agenda": "Reload the timetable", "Exporter en CSV": "Export as CSV", "Imprimer": "Print", "Réglages": "Settings", "Aujourd'hui": "Today", "Agenda": "Timetable", "Prochaine chance": "Next chance", "Trajectoire 70 %": "70 % track", "Compas": "Compass", "Plus": "More", "Acquis par compétence": "Learning outcomes by skill", "Changements": "Changes", "Diagnostic": "Diagnostics", "PITCH n'a pas été lu : agenda seul, sans état des critères.": "PITCH was not read: timetable only, no criteria status.", "aucun syllabus pour le programme ": "no syllabus for programme ", " : mode dégradé": ": degraded mode", "Prochaine séance utile : <b>": "Next useful session: <b>", " à démontrer": " to demonstrate", "Aucune séance à venir avec un critère à démontrer.": "No upcoming session with a criterion to demonstrate.", "Ajoute ton lien Hyperplanning dans les réglages pour voir ton agenda.": "Add your Hyperplanning link in Settings to see your timetable.", "Voir les critères": "See the criteria", "requalification": "requalification", "requalifications": "requalifications", "nouveauté": "update", "nouveautés": "updates", "PITCH+ v": "PITCH+ v", " — outil étudiant open source par Thomas Pitaval": " — open-source student tool by Thomas Pitaval", "Lecture seule · rien ne quitte ton navigateur": "Read-only · nothing leaves your browser", "Syllabus ": "Syllabus ", " · mapping ": " · mapping ", "Démontré": "Demonstrated", "Séance prévue": "Session scheduled", "Cours à venir": "Course to come", "Sans séance": "No session", "Pas encore enseigné": "Not taught yet", "Requalification": "Requalification", "Rattrapage": "Catch-up", "En cours": "In progress", "Pas commencé": "Not started", "Validé": "Validated", "Inscrit": "Signed up", "Mail envoyé": "Email sent", "Fait, à vérifier": "Done, to check", "Lancement": "Kick-off", "Phase aller": "Go phase", "Autonomie": "Self-study", "Temps expert": "Expert time", "Phase retour": "Return phase", "Feedback": "Feedback", "Évaluation": "Assessment", "Capitalisation": "Wrap-up", "PBL": "PBL", "TD": "Tutorial", "TP": "Lab", "Projet": "Project", "TE": "Exam", "critère": "criterion", "critères": "criteria", "séance": "session", "séances": "sessions", "acquis": "learning outcome", "cours": "course", "compétence": "skill", "Aucune séance connue : ni agenda, ni syllabus, ni PITCH": "No known session: not in the timetable, the syllabus or PITCH", " (sans date)": " (no date)", "Séance à venir selon PITCH": "Upcoming session according to PITCH", "déjà tenté": "already attempted", "Qu'est-ce qui arrive ?": "What is coming up?", " où démontrer": " where you can demonstrate", "Prochaines séances": "Next sessions", "Aucune séance à venir dans l'agenda.": "No upcoming session in the timetable.", "Ajoute ton lien Hyperplanning dans les réglages.": "Add your Hyperplanning link in Settings.", "Voir l'agenda →": "See the timetable →", "Où est ma prochaine chance ?": "Where is my next chance?", "critères sans séance": "criteria with no session", "critère sans séance": "criterion with no session", " prévus": " scheduled", " à venir": " to come", " sans séance": " with no session", "Voir les critères sans séance →": "See criteria with no session →", "Voir par séance →": "See by session →", "Suis-je sur la trajectoire ?": "Am I on track?", "seuil 70 %": "70 % threshold", "sur ce qui a déjà été enseigné": "of what has already been taught", "Détail par compétence →": "Detail by skill →", "</b> démontrés</li>": "</b> demonstrated</li>", "</b> prévus</li>": "</b> scheduled</li>", "</b> à venir</li>": "</b> to come</li>", "</b> pas encore enseignés</li>": "</b> not taught yet</li>", "</b>' + t(' sans séance') + '</li></ul>": "</b> no session</li></ul>", "démontrés dans l'année": "demonstrated that year", "rattrapés depuis": "caught up since", "datés": "scheduled", "à venir": "to come", "pas encore enseignés": "not taught yet", "sans séance": "no session", "prévus": "scheduled", "démontrés": "demonstrated", "Pas d'agenda.": "No timetable.", "5 j": "5 d", "7 j": "7 d", "Seulement où j'ai à démontrer · ": "Only where I have something to demonstrate · ", "journée": "all day", "hors compétences": "outside the skills framework", "pas dans le syllabus": "not in the syllabus", "aucun critère": "no criterion", "tout est démontré": "all demonstrated", "Daté": "Scheduled", "↻ Cours à venir": "↻ Course to come", "⚠ Sans séance": "⚠ No session", "Par séance": "By session", "Par cours": "By course", "Par compétence": "By skill", "Tout en liste": "Flat list", "Rechercher un critère, un cours…": "Search a criterion, a course…", "Rien ici.": "Nothing here.", "Tout est démontré, ou pas encore enseigné.": "Everything is demonstrated, or not taught yet.", "Sans compétence": "No skill", "Séance annoncée par PITCH": "Session announced by PITCH", "prochaine séance ": "next session ", "sans date": "no date", "selon PITCH": "according to PITCH", "aucune date connue": "no known date", "ni dans ton agenda, ni dans le syllabus, ni annoncée par PITCH": "not in your timetable, the syllabus, or announced by PITCH", "<p class=\"sub mut sm-t\">Une ligne par séance à venir : ce qu'il y a à démontrer ce jour-là. En bas, ce qui n'a plus aucune séance.</p>": "<p class=\"sub mut sm-t\">One line per upcoming session: what there is to demonstrate that day. At the bottom, what has no session left.</p>", "aucune séance": "no session", "Bachelor · 8 semestres": "Bachelor · 8 semesters", " % démontrés · seuil 70 %": " % demonstrated · 70 % threshold", "critères à démontrer pour atteindre 70 % du cursus": "criteria to demonstrate to reach 70 % of the programme", "si tu démontres tout ce qui est planifié": "if you demonstrate everything that is scheduled", "Année par année": "Year by year", "Chaque année telle qu'elle se présentait à sa fin. Un critère rattrapé plus tard reste en vert clair dans son année d'origine.": "Each year as it stood at its end. A criterion caught up later stays light green in its original year.", " rattrapé": " caught up", " depuis": " since", "+": "+", " d'années passées rattrapé": " from past years caught up", " cette année-là": " that year", "Un mot du critère, un acquis, un cours, un code…": "A word from the criterion, an outcome, a course, a code…", "Toutes les compétences": "All skills", "Tous les semestres": "All semesters", "Tous les domaines": "All domains", "Tous mes états": "All my statuses", "Critères": "Criteria", "Acquis": "Outcomes", "Cours": "Courses", "Effacer ×": "Clear ×", "Rien ne correspond.": "Nothing matches.", "Essaie un autre mot ou retire un filtre.": "Try another word or remove a filter.", "Afficher plus · ": "Show more · ", " restants": " left", ", dont ": ", including ", " dans ta recherche": " in your search", "pas dans ton PITCH": "not in your PITCH", "évalué par ": "assessed in ", "aucun cours ne l'évalue": "no course assesses it", "Électronique": "Electronics", "Énergétique": "Energy", "Mécanique, matériaux": "Mechanics, materials", "Maths, informatique": "Maths, computing", "Management": "Management", "Humanités, langues": "Humanities, languages", "Développement personnel": "Personal development", " · syllabus ": " · syllabus ", "Un <b>acquis</b> regroupe plusieurs critères. Il est validé dès que <b>": "A <b>learning outcome</b> groups several criteria. It is validated once <b>", " %</b> d'entre eux sont démontrés.": " %</b> of them are demonstrated.", "⚠ Requalifications (": "⚠ Requalifications (", "↻ Rattrapages (": "↻ Catch-ups (", "Les deux (": "Both (", "En cours (": "In progress (", "Pas commencé (": "Not started (", "Validés (": "Validated (", "Mes suivis": "My follow-ups", "Rechercher un acquis…": "Search a learning outcome…", "Tous les statuts": "All statuses", "Toutes les matières": "All subjects", "Retirer les filtres ×": "Remove filters ×", "Essaie un autre filtre.": "Try another filter.", " rattrapable": " recoverable", "Pas de détail PITCH.": "No PITCH detail.", " critères démontrés sur ": " criteria demonstrated out of ", "Mon suivi": "My follow-up", "Note personnelle, enregistrée sur cet ordinateur": "Personal note, stored on this computer", "Rien de neuf": "Nothing new", " depuis le ": " since ", "Aucun critère n'a bougé à la dernière lecture de PITCH.": "No criterion changed at the last PITCH read.", "Premier passage : le repère vient d'être posé.": "First visit: the baseline has just been set.", "Reposer le repère à aujourd'hui": "Reset the baseline to today", "Comparaison avec la lecture PITCH précédente, le ": "Compared with the previous PITCH read, on ", ". Repère enregistré sur cet ordinateur uniquement.": ". Baseline stored on this computer only.", "Critères démontrés depuis": "Criteria demonstrated since", "Acquis passés à validé": "Outcomes now validated", "Acquis en progrès": "Outcomes in progress", "Critères passés sans séance": "Criteria now without session", "Évaluation (TE)": "Assessment (exam)", "Séance": "Session", "Moodle ↗": "Moodle ↗", "Hors compétences : rien à démontrer ici.": "Outside the skills framework: nothing to demonstrate here.", "Cours absent du syllabus embarqué (": "Course missing from the bundled syllabus (", " ). Voir Diagnostic.": "). See Diagnostics.", "À démontrer ici · ": "To demonstrate here · ", "Déjà démontrés · ": "Already demonstrated · ", "Contribue à · ": "Contributes to · ", " · contribue sans évaluer": " · contributes without assessing", "Aucun critère rattaché à ce cours dans le syllabus.": "No criterion attached to this course in the syllabus.", "À démontrer · ": "To demonstrate · ", "Cours qui l'évaluent · ": "Courses assessing it · ", " à venir, la prochaine ": " to come, the next one ", "séances terminées": "sessions over", "pas encore dans l'agenda": "not yet in the timetable", "semestre passé": "past semester", "Aucun cours ne l'évalue dans le syllabus": "No course assesses it in the syllabus", "Contribue sans évaluer : ": "Contributes without assessing: ", "Codes PITCH": "PITCH codes", "Historique PITCH": "PITCH history", "démontré": "demonstrated", "séance à venir": "upcoming session", "non démontré": "not demonstrated", "Non encore vu dans PITCH.": "Not seen in PITCH yet.", "Fermer": "Close", "Langue": "Language", "Interface et intitulés du syllabus. Les titres d'acquis viennent de PITCH en français, du syllabus en anglais.": "Interface and syllabus titles. Outcome titles come from PITCH in French, from the syllabus in English.", "Agenda Hyperplanning": "Hyperplanning timetable", "Enregistrer": "Save", "Relire maintenant": "Reload now", "Retirer le lien": "Remove the link", "Relire PITCH": "Reload PITCH", "Vider le cache local": "Clear the local cache", "Données personnelles": "Personal data", "Tout effacer (agenda, cache PITCH, notes)": "Erase everything (timetable, PITCH cache, notes)", "Démo": "Demo", "À propos": "About", "Connecte-toi à PITCH dans l'onglet ouvert, puis reviens ici.": "Sign in to PITCH in the open tab, then come back here.", "Ouvrir PITCH": "Open PITCH", "J'ai fini, relire": "Done, reload", "Agenda seul": "Timetable only", "Aucun mot de passe n'est demandé : PITCH+ utilise la session déjà ouverte.": "No password is asked for: PITCH+ uses the session already open.", "Rien ne quitte ton navigateur : pas de compte, pas de serveur, pas de mot de passe. PITCH n'est jamais modifié. La seule requête réseau est la lecture de ton flux Hyperplanning.": "Nothing leaves your browser: no account, no server, no password. PITCH is never modified. The only network request is reading your Hyperplanning feed.", "Mode démo : PITCH fictif.": "Demo mode: fictional PITCH.", "Mode démo : agenda fictif.": "Demo mode: fictional timetable.", "Agenda ↔ syllabus": "Timetable ↔ syllabus", "PITCH ↔ syllabus": "PITCH ↔ syllabus", "Jeu de données embarqué": "Bundled dataset", "Séances lues": "Sessions read", "Hors compétences": "Outside the framework", "Appariées": "Matched", "Non appariées": "Unmatched", "démo": "demo", "Aucun lien enregistré. Le flux est relu automatiquement chaque jour.": "No link saved. The feed is re-read automatically every day.", "Ouvrir le mode démo": "Open demo mode", "(étudiant fictif, données générées).": "(fictional student, generated data).", "Lien enregistré : ": "Saved link: ", " · lu le ": " · read on ", "Dans Hyperplanning : <b>Exporter → Lien d'abonnement iCal</b>, puis colle le lien ici. Il contient une clé secrète : il reste sur cet ordinateur et n'est jamais affiché en entier.": "In Hyperplanning: <b>Export → iCal subscription link</b>, then paste the link here. It contains a secret key: it stays on this computer and is never shown in full.", "Lu via ton onglet PITCH déjà connecté (pitch-icam.rima1.fr).": "Read through your already signed-in PITCH tab (pitch-icam.rima1.fr).", " Dernière lecture : ": " Last read: ", " · Thomas Pitaval, Icam Lille, Bachelor International promo 2030 · open source · ": " · Thomas Pitaval, Icam Lille, International Bachelor class of 2030 · open source · ", "Outil étudiant non officiel, sans lien avec l'éditeur de PITCH ni avec l'Icam.": "Unofficial student tool, unrelated to the PITCH publisher or Icam.", "presque fini": "almost done", " s restantes": " s left", " min restantes": " min left", "Ouverture de PITCH…": "Opening PITCH…", "Lecture du cursus…": "Reading the programme…", "Analyse des critères…": "Reading the criteria…", "Lecture des compétences…": "Reading the skills…", "Trois sources, un seul écran.": "Three sources, one screen.", "PITCH+ relie ton agenda Hyperplanning, le syllabus et PITCH pour te dire ce que chaque séance te permet de démontrer. Rien ne quitte ton navigateur : pas de compte, pas de serveur, aucun mot de passe demandé.": "PITCH+ joins your Hyperplanning timetable, the syllabus and PITCH to tell you what each session lets you demonstrate. Nothing leaves your browser: no account, no server, no password asked.", "Ton agenda Hyperplanning": "Your Hyperplanning timetable", "Dans Hyperplanning : Exporter → Lien d'abonnement iCal. Colle-le ici. Il contient une clé secrète : il reste sur cet ordinateur et n'est jamais affiché en entier.": "In Hyperplanning: Export → iCal subscription link. Paste it here. It contains a secret key: it stays on this computer and is never shown in full.", "Ta session PITCH": "Your PITCH session", "PITCH+ lit PITCH à travers l'onglet où tu es déjà connecté, en lecture seule. Si tu ne l'es pas, un onglet s'ouvrira pour que tu te connectes.": "PITCH+ reads PITCH through the tab where you are already signed in, read-only. If you are not, a tab will open for you to sign in.", "La première lecture prend une minute": "The first read takes about a minute", "Environ 400 requêtes pour lire tous tes critères. Les suivantes sont beaucoup plus rapides : seuls les acquis qui ont bougé sont relus.": "About 400 requests to read all your criteria. Later reads are much faster: only the learning outcomes that changed are re-read.", "Lire PITCH et démarrer": "Read PITCH and start", "Plus tard": "Later", "Guide": "Guide", "Précédent": "Back", "Suivant": "Next", "C'est parti": "Let's go", "Revoir le guide": "Show the guide again", "Tout relire (lecture complète)": "Re-read everything (full read)", "Chaque séance de ton agenda est annotée avec ce qu'elle permet de démontrer, sa phase de PBL ou son TE, et un lien vers Moodle. Clique une séance pour voir les critères.": "Every session in your timetable is annotated with what it lets you demonstrate, its PBL phase or exam, and a link to Moodle. Click a session to see the criteria.", "Pour chaque critère qu'il te reste à démontrer : la prochaine séance datée, sinon le prochain cours, sinon « sans séance » — c'est ce qui mène à une requalification.": "For every criterion left to demonstrate: the next dated session, else the next course, else “no session” — which is what leads to a requalification.", "Où tu en es sur l'ensemble du Bachelor, année par année et par compétence. L'école ne tranche pas entre plusieurs lectures du seuil : l'outil non plus, il affiche la sienne.": "Where you stand across the whole Bachelor, year by year and by skill. The school does not settle between readings of the threshold: neither does the tool, it shows its own.", "L'explorateur du syllabus : cherche un critère, un acquis ou un cours, avec des filtres par compétence, semestre et domaine.": "The syllabus explorer: search a criterion, a learning outcome or a course, with filters by skill, semester and domain.", "Ton lien Hyperplanning, la langue de l'interface, et le bouton pour tout effacer. Tu peux revoir ce guide depuis le menu ⋯.": "Your Hyperplanning link, the interface language, and the button to erase everything. You can reopen this guide from the ⋯ menu.", "Lecture": "Read", "acquis relus": "outcomes re-read", "repris du cache": "reused from cache", "incrémentale": "incremental", "complète": "full"};
 /** Texte d'interface dans la langue choisie ; le français est la clé. */
 const t = s => (S.lang === 'en' && FR2EN[s] !== undefined) ? FR2EN[s] : s;
-export const VER = '1.7.3.2';
+export const VER = '1.7.4.0';
 const isExt = typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.id;
 const qs = new URLSearchParams(location.search);
 const DEMO = qs.get('demo') === '1';
@@ -22,7 +22,7 @@ const HATCH = '<defs><pattern id="ph" width="6" height="6" patternUnits="userSpa
 const S = {
   dataset: null, aliases: null, pitch: null, cal: null, R: null, T: 50, lang: 'fr', prefs: {}, notes: {}, snap: null, diff: null,
   view: 'home', demo: DEMO, now: DEMO ? new Date(DEMO_NOW) : new Date(), icsUrl: '', icsAt: '', icsErr: '', msg: '', err: null, busy: false,
-  panel: null, week: 0, open: {}, f: { q: '', st: '', sem: '', subj: '', bloc: '', only: false, grp: 'seance', cst: '', wk7: false, cq: '', k: { q: '', comp: '', sem: '', st: '', dom: '', lvl: 'crit', max: 60 } }, toast: ''
+  panel: null, tour: null, week: 0, open: {}, f: { q: '', st: '', sem: '', subj: '', bloc: '', only: false, grp: 'seance', cst: '', wk7: false, cq: '', k: { q: '', comp: '', sem: '', st: '', dom: '', lvl: 'crit', max: 60 } }, toast: ''
 };
 
 /* ---------------- utilitaires ---------------- */
@@ -36,7 +36,71 @@ const plural = (n, s, p) => n + ' ' + ((S.lang === 'en' ? n !== 1 : n > 1) ? t(p
 const LOC = () => S.lang === 'en' ? 'en-GB' : 'fr-FR';
 function fdate(iso) { try { return new Date(iso).toLocaleDateString(LOC(), { day: 'numeric', month: 'long', timeZone: 'Europe/Paris' }); } catch (e) { return iso; } }
 function fwhen(iso) { return fmtDay(iso, { weekday: 'short', day: 'numeric', month: 'short' }) + ' · ' + fmtTime(iso); }
-function setMsg(t, p) { S.msg = t; const m = document.getElementById('msg'), b = document.getElementById('bar'); if (m) m.textContent = t; if (b && p != null) b.style.width = p + '%'; }
+/* ---- progression de lecture : une requête PITCH = une unité ; l'estimation vient de la lecture précédente ---- */
+const PR = { on: false, done: 0, total: 0, t0: 0, exact: false, phase: '' };
+function prStart(estimate) { PR.on = true; PR.done = 0; PR.total = Math.max(20, estimate || 400); PR.t0 = Date.now(); PR.exact = false; }
+function prStop() { PR.on = false; }
+function prTotal(n) { PR.total = Math.max(n, PR.done + 1); PR.exact = true; prPaint(); }
+function prTick() { PR.done++; prPaint(); }
+function countJ(j) { return path => j(path).then(v => { prTick(); return v; }, e => { prTick(); throw e; }); }
+/** Reste estimé, en secondes, d'après le débit observé depuis le début de la lecture. */
+function prEta() {
+  const el = Date.now() - PR.t0;
+  if (PR.done < 6 || el < 1200) return null;
+  const left = Math.max(0, PR.total - PR.done) * (el / PR.done) / 1000;
+  return left < 1.5 ? 0 : left;
+}
+function fmtEta(sec) {
+  if (sec === 0) return t('presque fini');
+  if (sec < 20) return '≈ ' + Math.ceil(sec / 5) * 5 + t(' s restantes');
+  if (sec < 90) return '≈ ' + Math.ceil(sec / 10) * 10 + t(' s restantes');
+  return '≈ ' + (Math.ceil(sec / 30) / 2) + t(' min restantes');
+}
+function prPaint() {
+  const b = document.getElementById('bar'), m = document.getElementById('msg'), e = document.getElementById('eta');
+  if (b) b.style.width = (PR.on ? Math.min(99, 6 + 93 * PR.done / PR.total) : 100) + '%';
+  if (m && PR.on) m.textContent = PR.phase + ' ' + PR.done + '/' + (PR.exact ? '' : '≈ ') + PR.total;
+  if (e) { const s = PR.on ? prEta() : null; e.textContent = s == null ? '' : fmtEta(s); }
+}
+function setMsg(txt, p) {
+  S.msg = txt; PR.phase = String(txt).replace(/\s*\d+\s*\/\s*\d+\s*$/, '');
+  if (PR.on) return prPaint();
+  const m = document.getElementById('msg'), b = document.getElementById('bar');
+  if (m) m.textContent = txt; if (b && p != null) b.style.width = p + '%';
+}
+function loader(txt) { return '<div class="load"><div class="lg">PITCH</div><div class="lb"><i id="bar"></i></div><div class="ls" id="msg">' + esc(txt || S.msg || 'Chargement…') + '</div><div class="le" id="eta"></div></div>'; }
+
+/** File de lecture des critères : démarre pendant la phase 1, et saute les acquis dont le % n'a pas bougé
+    depuis la lecture précédente (leur détail est repris du cache, totaux rejoués à l'identique). */
+function deepQueue(st, j, prev, conc) {
+  const waiting = []; let active = 0, ended = false, fin = null, reuseOk = null;
+  const stat = { read: 0, reused: 0 };
+  const done = new Promise(r => { fin = r; });
+  function canReuse() {
+    if (reuseOk !== null) return reuseOk;
+    if (!prev || !prev.deep || !prev.byCode || !prev.prog || !st.prog) return reuseOk = false;
+    reuseOk = prev.prog.ProgramCode === st.prog.ProgramCode && prev.prog.VersionCode === st.prog.VersionCode;
+    return reuseOk;
+  }
+  function step() { active--; stat.read++; prPaint(); pump(); }
+  function pump() {
+    while (active < conc && waiting.length) { active++; deepenOne(st, j, waiting.shift()).then(step, step); }
+    if (ended && !active && !waiting.length) fin();
+  }
+  return {
+    push(list) {
+      list.forEach(a => {
+        const c = canReuse() ? prev.byCode[a.code] : null;
+        if (c && c.det && c.pct === a.pct) { a.det = c.det; a.lost = c.lost; a.fut = c.fut; retally(st, a); stat.reused++; }
+        else waiting.push(a);
+      });
+      pump();
+    },
+    pending() { return waiting.length + active; },
+    end() { ended = true; pump(); },
+    done, stat
+  };
+}
 function toast(t) { S.toast = t; render(); setTimeout(() => { if (S.toast === t) { S.toast = ''; render(); } }, 2600); }
 const unitOf = c => S.dataset.units[c];
 /** Intitulé dans la langue choisie : l'autre langue en repli, le code en dernier recours. */
@@ -74,13 +138,18 @@ async function boot() {
     const prog = (S.pitch && S.pitch.prog && S.pitch.prog.ProgramCode) || 'BI';
     const ds = idx.datasets.find(d => d.program === prog) || null;
     S.dataset = ds ? await loadJson('data/' + ds.file) : emptyDataset(prog);
-    if (!S.pitch) { await refreshPitch(true); return; }
+    if (!S.pitch) {
+      /* tout premier lancement : on propose le lien Hyperplanning avant de lancer la lecture de PITCH */
+      if (!S.icsUrl && !S.prefs.welcomed) { S.view = 'welcome'; S.R = null; render(); return; }
+      await refreshPitch(true); return;
+    }
     finish();
   } catch (e) { fail(e); }
 }
 function emptyDataset(prog) { return { program: prog, mappingYear: '', syllabusYear: '', semesters: SEMESTERS, comps: {}, ras: {}, aas: {}, crits: {}, units: {}, degraded: true }; }
 function finish() {
   recompute();
+  if (S.pitch && !S.prefs.tourDone && S.tour == null) S.tour = 0;
   if (!S.view || S.view === 'boot') S.view = 'home';
   if (location.hash === '#reglages') S.view = 'set';
   render();
@@ -115,19 +184,33 @@ function makeJ(tabId) {
     return null;
   }, () => null);
 }
-async function refreshPitch(first) {
+async function refreshPitch(first, full) {
   if (S.busy) return; S.busy = true;
   if (!isExt) { S.busy = false; if (!S.R) finish(); else toast('Hors extension : PITCH ne peut pas être lu.'); return; }
   const prev = S.pitch;
   try {
-    root.innerHTML = '<div class="load"><div class="lg">PITCH</div><div class="lb"><i id="bar"></i></div><div class="ls" id="msg">Ouverture de PITCH…</div></div>';
+    root.innerHTML = loader(t('Ouverture de PITCH…'));
     const tab = await getPitchTab(true);
     if (!tab) throw new Error('onglet PITCH introuvable');
-    const j = makeJ(tab.id);
+    const rs = S.prefs.readStats || {};
+    const mode = (!full && prev && prev.deep) ? 'inc' : 'full';
+    prStart((rs[mode] && rs[mode].reqs) || (mode === 'inc' ? 140 : 400));
+    setMsg(t('Lecture du cursus…'));
+    const j = countJ(makeJ(tab.id));
     const st = blankState('');
     try { const r = await chrome.scripting.executeScript({ target: { tabId: tab.id }, world: 'MAIN', func: () => (typeof UserId !== 'undefined' && UserId) ? String(UserId) : '' }); st.user = (r && r[0] && r[0].result) || ''; } catch (e) { }
-    await loadProgram(st, j, setMsg);
-    await deepen(st, j, (d, t) => setMsg('Analyse des critères… ' + d + '/' + t, 45 + 55 * d / t));
+    /* les critères d'un acquis sont lus dès que son bloc de compétence est connu : les deux phases se recouvrent */
+    const q = deepQueue(st, j, full ? null : prev, 8);
+    await loadProgram(st, j, setMsg, aas => q.push(aas));
+    setMsg(t('Analyse des critères…'));
+    prTotal(PR.done + q.pending());
+    q.end();
+    await q.done;
+    st.deep = true; st.fetchedAt = new Date().toISOString();
+    st.read = { mode: mode, read: q.stat.read, reused: q.stat.reused, ms: Date.now() - PR.t0 };
+    S.prefs.readStats = Object.assign({}, rs, { [mode]: { reqs: PR.done, ms: st.read.ms } });
+    store.set({ [K.PREFS]: S.prefs });
+    prStop();
     if (!st.user) st.user = 'étudiant';
     S.pitch = st;
     const prog = st.prog.ProgramCode;
@@ -140,6 +223,7 @@ async function refreshPitch(first) {
     await store.set({ [K.PITCH]: st });
     S.busy = false; finish();
   } catch (e) {
+    prStop();
     S.busy = false; S.pitch = prev;
     if (e && e.auth) { S.view = 'auth'; S.R = null; if (prev) { recompute(); } render(); return; }
     if (first && !prev) { S.view = 'auth'; S.authErr = e && e.message; render(); return; }
@@ -183,10 +267,11 @@ function takeSnapshot() {
 
 /* ---------------- rendu ---------------- */
 function render() {
+  if (S.view === 'welcome') { root.innerHTML = viewWelcome() + (S.toast ? '<div class="toast">' + esc(S.toast) + '</div>' : ''); const f = root.querySelector('#icsurl'); if (f) f.focus(); return; }
   if (S.view === 'auth') { root.innerHTML = viewAuth(); return; }
-  if (!S.R) { root.innerHTML = '<div class="load"><div class="lg">PITCH</div><div class="lb"><i id="bar"></i></div><div class="ls" id="msg">' + esc(S.msg || 'Chargement…') + '</div></div>'; return; }
+  if (!S.R) { root.innerHTML = loader(); return; }
   const V = { home: viewHome, agenda: viewAgenda, chances: viewChances, traj: viewTraj, compas: viewCompas, acquis: viewAcquis, chg: viewChg, diag: viewDiag, set: viewSet };
-  root.innerHTML = header() + banner() + nav() + '<div class="body">' + (V[S.view] || viewHome)() + '</div>' + footer() + (S.panel ? panel() : '') + (S.toast ? '<div class="toast">' + esc(S.toast) + '</div>' : '');
+  root.innerHTML = header() + banner() + nav() + '<div class="body">' + (V[S.view] || viewHome)() + '</div>' + footer() + (S.tour != null ? tour() : '') + (S.panel ? panel() : '') + (S.toast ? '<div class="toast">' + esc(S.toast) + '</div>' : '');
   const q = root.querySelector('[data-focus]'); if (q) { q.focus(); const p = q.value.length; try { q.setSelectionRange(p, p); } catch (e) { } }
 }
 function header() {
@@ -198,6 +283,8 @@ function header() {
     (S.demo ? '' : '<button data-act="refresh-pitch" class="x" title="Relire PITCH et l\'agenda">' + t('Actualiser') + '</button>') +
     '<details class="more"><summary title="Autres actions">⋯</summary><div class="menu">' +
     (S.demo ? '' : item('refresh-ics', t('Relire l\'agenda'))) +
+    (S.demo ? '' : item('refresh-pitch-full', t('Tout relire (lecture complète)'))) +
+    item('tour-open', t('Revoir le guide')) +
     item('csv', t('Exporter en CSV')) + item('print', t('Imprimer')) +
     '<hr>' + item('view', t('Réglages'), ' data-v="set"') +
     '</div></details></span></header>';
@@ -557,7 +644,8 @@ function viewDiag() {
     tr('Critères lus', d.pitchCrits + (d.pitchCritsUnknown ? ' <span class="chip chip--rat">' + d.pitchCritsUnknown + ' absents du syllabus</span>' : '')) +
     tr('Critères du syllabus jamais vus dans PITCH', d.datasetCritsNotInPitch) +
     tr('Séances PITCH → cours', d.sessCodes ? d.sessMatched + ' / ' + d.sessCodes + ' (' + pct(d.sessMatched, d.sessCodes) + ' %)' : '—') +
-    tr('Lu le', esc(S.pitch && S.pitch.fetchedAt ? new Date(S.pitch.fetchedAt).toLocaleString(LOC()) : '—')) + '</table></div></div>' +
+    tr('Lu le', esc(S.pitch && S.pitch.fetchedAt ? new Date(S.pitch.fetchedAt).toLocaleString(LOC()) : '—')) +
+    (S.pitch && S.pitch.read ? tr(t('Lecture'), (S.pitch.read.mode === 'inc' ? t('incrémentale') : t('complète')) + ' · ' + S.pitch.read.read + ' ' + t('acquis relus') + (S.pitch.read.reused ? ' · ' + S.pitch.read.reused + ' ' + t('repris du cache') : '') + ' · ' + Math.round(S.pitch.read.ms / 100) / 10 + ' s') : '') + '</table></div></div>' +
     '<div class="sect"><span class="kicker">' + t('Jeu de données embarqué') + '</span><table class="ref">' + tr('Programme', esc(d.dataset.program)) + tr('Mapping cours × critères', esc(d.dataset.mappingYear || '—') + ' (Excel officiel)') + tr('Syllabus', esc(d.dataset.syllabusYear || '—') + ' (PDF)') +
     tr('Cours / critères', d.dataset.units + ' / ' + d.dataset.crits) + (st.merged ? tr('Contrôles', st.merged.units_both + ' cours dans les deux sources · ' + st.merged.units_excel_only + ' Excel seul · ' + st.merged.units_pdf_only + ' PDF seul · ' + st.merged.crits_without_unit + ' critères sans cours · ' + st.merged.crits_multi_unit + ' critères multi-cours') : '') + tr('Version', t('PITCH+ v') + VER) + '</table></div>';
 }
@@ -575,6 +663,41 @@ function viewSet() {
     '<h3 class="gh">' + t('Démo') + '</h3><p><a href="app.html?demo=1">' + t('Ouvrir le mode démo') + '</a> ' + t('(étudiant fictif, données générées).') + '</p>' +
     '<h3 class="gh">' + t('À propos') + '</h3><p>' + t('PITCH+ v') + VER + t(' · Thomas Pitaval, Icam Lille, Bachelor International promo 2030 · open source · ') + '<a href="mailto:pitproductionpro@gmail.com">pitproductionpro@gmail.com</a> · <a href="https://pitproduction.com" target="_blank" rel="noopener">pitproduction.com</a>. Outil étudiant non officiel, sans lien avec l\'éditeur de PITCH ni avec l\'Icam.</p></div>';
 }
+/* ---- premier lancement ---- */
+function viewWelcome() {
+  return '<div class="wel"><div class="lg">PITCH</div>' +
+    '<h1>' + t('Trois sources, un seul écran.') + '</h1>' +
+    '<p class="sub">' + t('PITCH+ relie ton agenda Hyperplanning, le syllabus et PITCH pour te dire ce que chaque séance te permet de démontrer. Rien ne quitte ton navigateur : pas de compte, pas de serveur, aucun mot de passe demandé.') + '</p>' +
+    '<ol class="wsteps">' +
+    '<li><b>' + t('Ton agenda Hyperplanning') + '</b><span>' + t('Dans Hyperplanning : Exporter → Lien d\'abonnement iCal. Colle-le ici. Il contient une clé secrète : il reste sur cet ordinateur et n\'est jamais affiché en entier.') + '</span>' +
+    '<div class="row"><input type="url" id="icsurl" placeholder="https://planning.icam.fr/Telechargements/ical/Edt_….ics?…" value=""><button data-act="ics-save">' + t('Enregistrer') + '</button></div>' +
+    (S.icsUrl ? '<span class="ok-t">✓ ' + t('Lien enregistré : ') + '<span class="mono">' + esc(maskIcsUrl(S.icsUrl)) + '</span>' + (S.cal ? ' · ' + S.cal.events.length + t(' séances') : '') + '</span>' : '') + '</li>' +
+    '<li><b>' + t('Ta session PITCH') + '</b><span>' + t('PITCH+ lit PITCH à travers l\'onglet où tu es déjà connecté, en lecture seule. Si tu ne l\'es pas, un onglet s\'ouvrira pour que tu te connectes.') + '</span></li>' +
+    '<li><b>' + t('La première lecture prend une minute') + '</b><span>' + t('Environ 400 requêtes pour lire tous tes critères. Les suivantes sont beaucoup plus rapides : seuls les acquis qui ont bougé sont relus.') + '</span></li>' +
+    '</ol>' +
+    '<div class="row"><button class="o" data-act="welcome-go">' + t('Lire PITCH et démarrer') + '</button>' + (S.icsUrl ? '' : '<button data-act="welcome-skip">' + t('Plus tard') + '</button>') + '</div>' +
+    '<p class="mut sm-t">' + t('Outil étudiant non officiel, sans lien avec l\'éditeur de PITCH ni avec l\'Icam.') + '</p></div>';
+}
+
+/* ---- guide des écrans, au premier démarrage réussi ---- */
+const TOUR = [
+  ['Agenda', 'Chaque séance de ton agenda est annotée avec ce qu\'elle permet de démontrer, sa phase de PBL ou son TE, et un lien vers Moodle. Clique une séance pour voir les critères.'],
+  ['Prochaine chance', 'Pour chaque critère qu\'il te reste à démontrer : la prochaine séance datée, sinon le prochain cours, sinon « sans séance » — c\'est ce qui mène à une requalification.'],
+  ['Trajectoire 70 %', 'Où tu en es sur l\'ensemble du Bachelor, année par année et par compétence. L\'école ne tranche pas entre plusieurs lectures du seuil : l\'outil non plus, il affiche la sienne.'],
+  ['Compas', 'L\'explorateur du syllabus : cherche un critère, un acquis ou un cours, avec des filtres par compétence, semestre et domaine.'],
+  ['Réglages', 'Ton lien Hyperplanning, la langue de l\'interface, et le bouton pour tout effacer. Tu peux revoir ce guide depuis le menu ⋯.']
+];
+function tour() {
+  const i = Math.max(0, Math.min(TOUR.length - 1, S.tour | 0)), s = TOUR[i];
+  return '<div class="scrim" data-act="tour-end"></div><div class="tourbox" role="dialog" aria-label="' + t('Guide') + '">' +
+    '<span class="kicker o">' + t('Guide') + ' · ' + (i + 1) + '/' + TOUR.length + '</span>' +
+    '<h2>' + esc(t(s[0])) + '</h2><p>' + esc(t(s[1])) + '</p>' +
+    '<div class="row"><span class="dots">' + TOUR.map((x, k) => '<i' + (k === i ? ' class="on"' : '') + '></i>').join('') + '</span>' +
+    (i ? '<button data-act="tour-prev">' + t('Précédent') + '</button>' : '') +
+    (i < TOUR.length - 1 ? '<button class="o" data-act="tour-next">' + t('Suivant') + '</button>' : '<button class="o" data-act="tour-end">' + t('C\'est parti') + '</button>') +
+    '</div></div>';
+}
+
 function viewAuth() {
   return '<div class="load"><div class="lg">PITCH</div><div class="ls">' + t('Connecte-toi à PITCH dans l\'onglet ouvert, puis reviens ici.') + (S.authErr ? '<br><small class="err-t">' + esc(S.authErr) + '</small>' : '') + '</div>' +
     '<div style="display:flex;gap:8px"><button class="x" data-act="open-pitch">' + t('Ouvrir PITCH') + '</button><button data-act="refresh-pitch">' + t('J\'ai fini, relire') + '</button>' + (S.cal ? '<button data-act="agenda-only">' + t('Agenda seul') + '</button>' : '') + '</div>' +
@@ -661,6 +784,13 @@ root.addEventListener('click', async e => {
   if (act === 'tag') { e.stopPropagation(); const c = el.dataset.a, n = S.notes[c] || {}; n.t = n.t === el.dataset.t ? '' : el.dataset.t; S.notes[c] = n; store.set({ [K.NOTES]: S.notes }); return render(); }
   if (act === 'reset-snap') { takeSnapshot(); S.diff = null; store.set({ lastDiff: null }); return render(); }
   if (act === 'refresh-pitch') { if (S.demo) return toast('Mode démo : PITCH fictif.'); return refreshPitch(false); }
+  if (act === 'refresh-pitch-full') { if (S.demo) return toast('Mode démo : PITCH fictif.'); return refreshPitch(false, true); }
+  if (act === 'welcome-go') { S.prefs.welcomed = true; await store.set({ [K.PREFS]: S.prefs }); return refreshPitch(true); }
+  if (act === 'welcome-skip') { S.prefs.welcomed = true; await store.set({ [K.PREFS]: S.prefs }); return refreshPitch(true); }
+  if (act === 'tour-next') { S.tour = (S.tour | 0) + 1; return render(); }
+  if (act === 'tour-prev') { S.tour = Math.max(0, (S.tour | 0) - 1); return render(); }
+  if (act === 'tour-end') { S.tour = null; S.prefs.tourDone = true; store.set({ [K.PREFS]: S.prefs }); return render(); }
+  if (act === 'tour-open') { S.tour = 0; return render(); }
   if (act === 'refresh-ics') { if (S.demo) return toast('Mode démo : agenda fictif.'); return refreshIcs(); }
   if (act === 'ics-save') { const v = (document.getElementById('icsurl') || {}).value || ''; if (!isIcsUrl(v)) return toast('Lien non reconnu : il doit venir de planning.icam.fr et finir par .ics?…'); return refreshIcs(v.trim()); }
   if (act === 'ics-clear') { if (isExt) await chrome.runtime.sendMessage({ type: 'ics:clear' }); S.icsUrl = ''; S.cal = null; S.icsAt = ''; S.icsErr = ''; recompute(); return render(); }

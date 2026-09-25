@@ -31,8 +31,10 @@ export function pool(items, n, fn, tick) {
   });
 }
 
-/* ---------------- phase 1 : programme, compétences, RA, AA ---------------- */
-export async function loadProgram(S, j, setMsg) {
+/* ---------------- phase 1 : programme, compétences, RA, AA ----------------
+   `onAAs` est appelé dès qu'un bloc de compétence est lu, avec les acquis nouvellement connus :
+   l'appelant peut lancer la phase 2 sur ces acquis sans attendre la fin de la phase 1. */
+export async function loadProgram(S, j, setMsg, onAAs) {
   setMsg && setMsg('Lecture du cursus…', 3);
   const p = await j('/api/Program?culture=' + C);
   if (!p || !p.length) throw new Error('cursus introuvable (es-tu connecté à PITCH ?)');
@@ -41,39 +43,57 @@ export async function loadProgram(S, j, setMsg) {
   const base = '&ProgramCode=' + encodeURIComponent(S.prog.ProgramCode) + '&VersionCode=' + encodeURIComponent(S.prog.VersionCode) + '&culture=' + C;
   const bl = await j('/api/SkillBlock?ProgramCode=' + encodeURIComponent(S.prog.ProgramCode) + '&VersionCode=' + encodeURIComponent(S.prog.VersionCode) + '&culture=' + C + '&simpleversion=false');
   S.blockList = (bl || []).map(b => ({ code: b.Code, title: b.Title || b.Code })).filter(b => b.code);
-  const all = await pool(S.blockList, 8, b =>
+  await pool(S.blockList, 8, b =>
     j('/api/LearningGoal?BlockCode=' + b.code + '&Graph=Bar' + base).then(lgs =>
       pool(lgs || [], 6, lg => j('/api/LearningGoal?BlockCode=' + b.code + '&LGCode=' + encodeURIComponent(lg.LGCode) + '&Graph=Bar' + base)
-        .then(los => ({ lg, los: los || [] }))).then(rows => ({ b: b.code, rows }))),
+        .then(los => ({ lg, los: los || [] }))).then(rows => { ingest(S, b.code, rows, onAAs); })),
     (d, t) => setMsg && setMsg('Lecture des compétences… ' + d + '/' + t, 3 + 42 * d / t));
-  all.forEach(x => {
-    if (!x) return;
-    x.rows.forEach(r => {
-      if (!r) return;
-      r.los.forEach(lo => {
-        let e = S.byCode[lo.Code];
-        if (!e) {
-          const p = String(lo.Code).split('-');
-          e = { code: lo.Code, title: lo.Title || '', subject: p.length > 2 ? p[1] : '—', bloc: (p[2] && /^C\d/.test(p[2])) ? p[2] : x.b,
-                pct: lo.Progress, sems: [], ra: r.lg.LGCode, minPrg: lo.MinPrgPct, minAcq: lo.MinAcqPct, det: null, lost: null, fut: null };
-          S.byCode[lo.Code] = e; S.aa.push(e);
-        }
-        if (lo.Progress != null && (e.pct == null || lo.Progress > e.pct)) e.pct = lo.Progress;
-        (lo.ProgramList || []).forEach(pl => { if (e.sems.indexOf(pl.ProgramCode) < 0) e.sems.push(pl.ProgramCode); });
-      });
-    });
-  });
   S.aa.forEach(e => { e.semsT = e.sems.map(c => { const s = S.subs.find(z => z.code === c); return s ? s.title : c; }); });
   S.aa.sort((a, b) => a.code < b.code ? -1 : 1);
   return S;
 }
 
+/** Ingestion d'un bloc de compétence : crée les acquis manquants et signale les nouveaux. */
+function ingest(S, bloc, rows, onAAs) {
+  const fresh = [];
+  (rows || []).forEach(r => {
+    if (!r) return;
+    (r.los || []).forEach(lo => {
+      let e = S.byCode[lo.Code];
+      if (!e) {
+        const p = String(lo.Code).split('-');
+        e = { code: lo.Code, title: lo.Title || '', subject: p.length > 2 ? p[1] : '—', bloc: (p[2] && /^C\d/.test(p[2])) ? p[2] : bloc,
+              pct: lo.Progress, sems: [], ra: r.lg.LGCode, minPrg: lo.MinPrgPct, minAcq: lo.MinAcqPct, det: null, lost: null, fut: null };
+        S.byCode[lo.Code] = e; S.aa.push(e); fresh.push(e);
+      }
+      if (lo.Progress != null && (e.pct == null || lo.Progress > e.pct)) e.pct = lo.Progress;
+      (lo.ProgramList || []).forEach(pl => { if (e.sems.indexOf(pl.ProgramCode) < 0) e.sems.push(pl.ProgramCode); });
+    });
+  });
+  if (fresh.length && onAAs) onAAs(fresh);
+}
+
 /* ---------------- phase 2 : détail par critère (locdetail) ---------------- */
-export async function deepen(S, j, onTick) {
+/** Lit le détail d'UN acquis. Séparé pour permettre une file d'attente qui démarre pendant la phase 1. */
+export function deepenOne(S, j, a) {
+  return j('/api/locdetail?ParentProgramCode=' + encodeURIComponent(S.prog.ProgramCode) + '&LGCode=' + encodeURIComponent(a.ra) + '&LOCode=' + encodeURIComponent(a.code) + '&culture=' + C)
+    .then(traits => analyse(S, a, traits));
+}
+
+/** Rejoue les totaux (semestre courant, tableau par semestre) d'un acquis repris d'un cache,
+    avec exactement la même règle que `analyse` : un acquis réutilisé ne doit rien changer à l'état global. */
+export function retally(S, a) {
+  if (!a.det || !a.det.crits) return;
+  a.det.crits.forEach(c => {
+    (c.sessions || []).forEach(s => { if (s.st !== 4 && s.group && s.serie > S.serieMax) S.serieMax = s.serie; });
+    if (c.done) tl(S, c.done, 'demontres');
+    else if (c.past) tl(S, c.past, 'manques');
+  });
+}
+
+export async function deepen(S, j, onTick, conc) {
   const todo = S.aa.filter(a => !a.det);
-  await pool(todo, 6, a =>
-    j('/api/locdetail?ParentProgramCode=' + encodeURIComponent(S.prog.ProgramCode) + '&LGCode=' + encodeURIComponent(a.ra) + '&LOCode=' + encodeURIComponent(a.code) + '&culture=' + C)
-      .then(traits => analyse(S, a, traits)), onTick);
+  await pool(todo, conc || 6, a => deepenOne(S, j, a), onTick);
   S.deep = true;
   S.fetchedAt = new Date().toISOString();
   return S;

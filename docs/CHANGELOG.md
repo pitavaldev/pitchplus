@@ -1,5 +1,12 @@
 # Changelog PITCH+
 
+## 1.7.4.0 — 2026-09-25
+
+- **Lecture de PITCH plus rapide.** Les critères d'un acquis sont lus dès que son bloc de compétence est connu : les deux phases de lecture se recouvrent au lieu de s'enchaîner. À la relecture, un acquis dont le pourcentage n'a pas bougé garde son détail en cache — en pratique quelques dizaines de requêtes au lieu de ~400. « Tout relire (lecture complète) » dans le menu ⋯ force la lecture intégrale ; le Diagnostic indique le mode utilisé, le nombre d'acquis relus et la durée.
+- **Barre de progression avec attente estimée.** Le compteur suit les requêtes réellement faites ; l'estimation part du débit observé et de la durée de la lecture précédente.
+- **Premier lancement guidé.** Un écran d'accueil permet de coller le lien Hyperplanning avant même la première lecture de PITCH, puis un guide en cinq écrans présente Agenda, Prochaine chance, Trajectoire, Compas et Réglages. « Revoir le guide » dans le menu ⋯.
+- Deux tests ajoutés (27 au total) : l'annonce des acquis pendant la phase 1, et l'équivalence exacte des totaux entre un acquis relu et un acquis repris du cache.
+
 ## 1.7.3.2 — 2026-09-21
 
 - Numérotation ramenée en V1 : toutes les versions sont préfixées par `1.` (1.7.3.2, 1.7.3.1, … 1.6.0.0). Première version publique sur GitHub.

@@ -1,5 +1,5 @@
 import { test, eq, ok, fx, fakeApi } from './harness.js';
-import { blankState, loadProgram, deepen, analyse, classifyV5, pool, critCode } from '../extension/lib/pitch.js';
+import { blankState, loadProgram, deepen, deepenOne, retally, analyse, classifyV5, pool, critCode } from '../extension/lib/pitch.js';
 
 const fixtures = await fx('fixtures/public/pitch-demo.json').then(r => r.json());
 const j = fakeApi(fixtures);
@@ -52,4 +52,28 @@ test('loadProgram + deepen sur les fixtures démo', async () => {
   await deepen(S, j);
   ok(S.deep); ok(S.aa.every(a => a.det)); eq(S.serieMax, 4);
   const n = S.aa.reduce((s, a) => s + a.det.total, 0); ok(n > 900, 'critères ' + n);
+});
+
+test('loadProgram : onAAs annonce chaque acquis une fois et une seule', async () => {
+  const S = blankState('x'); const seen = [];
+  await loadProgram(S, j, null, list => list.forEach(a => seen.push(a.code)));
+  eq(seen.length, S.aa.length, 'nombre annoncé');
+  eq(new Set(seen).size, seen.length, 'aucun doublon');
+  eq(seen.slice().sort(), S.aa.map(a => a.code).slice().sort());
+});
+
+test('retally : un acquis repris du cache laisse les totaux identiques à une vraie lecture', async () => {
+  const full = blankState('x'); await loadProgram(full, j); await deepen(full, j);
+  /* seconde lecture : la moitié des acquis est reprise du cache, l'autre relue */
+  const mix = blankState('x'); await loadProgram(mix, j);
+  let i = 0;
+  for (const a of mix.aa) {
+    const c = full.byCode[a.code];
+    if (i++ % 2 === 0 && c && c.det) { a.det = c.det; a.lost = c.lost; a.fut = c.fut; retally(mix, a); }
+    else await deepenOne(mix, j, a);
+  }
+  eq(mix.serieMax, full.serieMax, 'semestre courant');
+  eq(Object.keys(mix.tl).sort(), Object.keys(full.tl).sort(), 'semestres du tableau');
+  Object.keys(full.tl).forEach(k => eq(mix.tl[k], full.tl[k], 'totaux ' + k));
+  eq(mix.aa.map(a => a.lost), full.aa.map(a => a.lost), 'critères sans séance');
 });
