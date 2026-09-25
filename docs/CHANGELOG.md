@@ -1,5 +1,9 @@
 # Changelog PITCH+
 
+## 1.7.4.1 — 2026-09-25
+
+- Correction : après la première lecture de PITCH, l'écran de bienvenue se réaffichait au lieu du tableau de bord. `finish()` ne ramenait à l'accueil que depuis la vue `boot` ; les vues de passage `welcome` et `auth` y sont désormais incluses.
+
 ## 1.7.4.0 — 2026-09-25
 
 - **Lecture de PITCH plus rapide.** Les critères d'un acquis sont lus dès que son bloc de compétence est connu : les deux phases de lecture se recouvrent au lieu de s'enchaîner. À la relecture, un acquis dont le pourcentage n'a pas bougé garde son détail en cache — en pratique quelques dizaines de requêtes au lieu de ~400. « Tout relire (lecture complète) » dans le menu ⋯ force la lecture intégrale ; le Diagnostic indique le mode utilisé, le nombre d'acquis relus et la durée.
