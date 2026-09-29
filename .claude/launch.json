@@ -1,0 +1,26 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "pitchplus-static",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8765",
+        "--bind",
+        "127.0.0.1"
+      ],
+      "port": 8765
+    },
+    {
+      "name": "pitchplus-dev-cors",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "tools/dev_server.py",
+        "8766"
+      ],
+      "port": 8766
+    }
+  ]
+}

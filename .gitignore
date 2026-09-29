@@ -1,0 +1,13 @@
+fixtures/private/
+_inputs/
+*.zip
+.DS_Store
+node_modules/
+data/generated/*.tmp
+
+# clés et paquets signés — jamais publiés
+extension.pem
+extension.crx
+# documents institutionnels source (Excel, PDF du syllabus) — non redistribués
+data/sources/
+legacy-v5/
